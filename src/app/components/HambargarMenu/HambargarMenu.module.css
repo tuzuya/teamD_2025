@@ -1,0 +1,29 @@
+.HambargarMenu {
+    width: 32px;
+    height: 24px;
+    position: relative;
+    z-index: var(--z-index-menu);
+}
+
+.HambargarBar {
+  width: 100%;
+  height: 2px;
+  position: absolute;
+  background: #000;
+  left: 50%;
+}
+
+.HambargarBar:first-child {
+  top: 0;
+  transform: translate(-50%, 0);
+}
+
+.HambargarBar:nth-child(2) {
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.HambargarBar:last-child {
+  top: 100%;
+  transform: translate(-50%, -100%);
+}
