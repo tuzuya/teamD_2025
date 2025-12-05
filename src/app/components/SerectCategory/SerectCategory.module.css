@@ -1,0 +1,32 @@
+.SerectCategory {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 0 15px;
+    background-color: var(--white-color);
+    border: 1px solid var(--primary-color);
+    border-radius:5px;
+    width:calc(100% - 40px);
+    height: 64px;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,0.25);
+    position: relative;
+}
+
+.CategoryTxt{
+    font-size: 16px;
+    font-weight: 500;
+    color:var(--primary-color);
+}
+
+
+.SerectCategory::before{
+    content:"";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-top:1px solid var(--primary-color);
+    border-right:1px solid var(--primary-color);
+    top:56%;
+    right:9%;
+    transform: rotate(45deg) translate(-50%,-45%);
+}
