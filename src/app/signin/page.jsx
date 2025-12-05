@@ -1,5 +1,5 @@
 import Link from "next/link";
-import SignInForm from "../components/SignInForm";
+import SignInForm from "../components/SignInForm/SignInForm.jsx";
 
 export default function SignInPage(){
     return(
