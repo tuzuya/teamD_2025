@@ -1,0 +1,14 @@
+.CheckKeyword {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.SerectCategorys {
+    display: flex;
+    flex-wrap:wrap;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 40px;
+}
