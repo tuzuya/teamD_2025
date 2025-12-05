@@ -13,6 +13,12 @@ export default function SignInPage(){
                     サインアップはこちら
                 </Link>
             </div>
+            <div>
+                <p>sellへ</p>
+                <Link href="/sell" style={{ color: "blue", textDecoration: "underline"}}>
+                    出品ページはこちら
+                </Link>
+            </div>
 
         </main>
         
