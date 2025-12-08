@@ -5,7 +5,6 @@ import SignUpForm from "../components/SignUpForm/SignUpForm.jsx";
 export default function SignUpPage(){
     return(
         <main>
-            <h1>ユーザー登録</h1>
             <SignUpForm/>
             <div>
                 <p>すでにアカウントをお持ちですか？</p>

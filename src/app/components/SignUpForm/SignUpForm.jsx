@@ -11,13 +11,24 @@ export default function SignUpForm(){
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
-    
+    const [values, setValues] = useState({
+        email:"",
+        password:"",
+        confirmPassword:"",
+        initial:"",
+        nickname:""
+    });
+    const [errors, setErrors] = useState(null);
+    const [touched, setTouched] = useState(false);
+
     const router = useRouter();
 
     //Headerに与える引数定義
     const pageTitle = "会員登録";
     const imgSrc = "";
 
+
+    //Todo: mock用関数を利用して、データサーバとの通信時の非同期処理の仮型の作成
     const mockSignUp = async() => {
         setTimeout(() => {
             console.log("mock用待機時間2秒が終了しました。");
@@ -26,10 +37,10 @@ export default function SignUpForm(){
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(password !== confirmPassword){
-            setError("パスワードが一致しません");
-            return;
-        }
+        // if(password !== confirmPassword){
+        //     setError("パスワードが一致しません");
+        //     return;
+        // }
         //ここでぜe.target.valueとしないのか？
         //A. onSubmitの時は、e.targetは<form>タグを指すので、valueがないから。
         //e.target.valueはonChangeの時に使う
