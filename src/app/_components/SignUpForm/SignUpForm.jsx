@@ -2,24 +2,32 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "../Header/Header.jsx";
-
+import validateEmail from "../../_validationFunctions/validateEmail.jsx";
+import validatePassword from "../../_validationFunctions/validatePassword.jsx";
+import validateConfirmPassword from "../../_validationFunctions/validateConfirmPassword.jsx";
 
 export default function SignUpForm(){
-    const [initial, setInitial] = useState("");
-    const [email, setEmail] = useState("");
-    const [nickname, setNickname] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState("");
     const [values, setValues] = useState({
+        initial:"",
+        nickname:"",
         email:"",
         password:"",
         confirmPassword:"",
-        initial:"",
-        nickname:""
     });
-    const [errors, setErrors] = useState(null);
-    const [touched, setTouched] = useState(false);
+    const [errors, setErrors] = useState({
+        initial:"",
+        nickname:"",
+        email:"",
+        password:"",
+        confirmPassword:"",
+    });
+    const [touched, setTouched] = useState({
+        email:false,
+        password:false,
+        confirmPassword:false,
+        initial:false,
+        nickname:false
+    });
 
     const router = useRouter();
 
@@ -50,6 +58,17 @@ export default function SignUpForm(){
         router.push("/purchase");
     }
 
+    const handleChange = (fieldName, newValue) => {
+        setValues((prev) => ({
+            ...prev,
+            [fieldName]: newValue
+        }))
+        setErrors((prev) => ({
+            ...prev,
+            [fieldName]:null//データが変更されたタイミングでの、エラーのクリア
+        }))
+    }
+
     return(
         <form onSubmit={handleSubmit}>
             <header>
@@ -58,10 +77,11 @@ export default function SignUpForm(){
             <label>
                 イニシャル(必須)
                 <input
+                //Todo: イニシャルの入力ボックスは簡易的にしているので、後で修正する
                     type="text"
-                    value={initial}
+                    value={values.initial}
                     //入力値が変更されたらStateを更新する
-                    onChange={(e) => setInitial(e.target.value)}
+                    onChange = {(e) => handleChange("initial", e.target.value)}
                     required
                 />
             </label>
@@ -70,8 +90,8 @@ export default function SignUpForm(){
                 ニックネーム
                 <input
                     type="text"
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
+                    value={values.nickname}
+                    onChange={(e) => handleChange("nickname", e.target.value)}
                 />
             </label>
 
@@ -79,8 +99,9 @@ export default function SignUpForm(){
                 G-mail(必須)
                 <input
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={values.email}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                    onBlur={(e) => validateEmail(e.target.value)}
                     required
                 />
             </label>
@@ -89,8 +110,9 @@ export default function SignUpForm(){
                 パスワード
                 <input
                     type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={values.password}
+                    onChange={(e) => handleChange("password", e.target.value)}
+                    onBlur={(e) => validatePassword(e.target.value)}
                     required
                 />
             </label>
@@ -99,8 +121,9 @@ export default function SignUpForm(){
                 パスワード(確認用)
                 <input
                     type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    value={values.confirmPassword}
+                    onChange={(e) => handleChange("confirmPassword", e.target.value)}
+                    onBlur={(e) => validateConfirmPassword(values.password, e.target.value)}
                     required
                 />
             </label>

@@ -1,8 +1,8 @@
 "use client";
-import CheckKeyword from "../components/CheckKeyWord/Checkkeyword";
-import Header from "../components/Header/Header";
-import SerectCategory from "../components/SerectCategory/SerectCategory";
-import UserLog from "../components/UserLog/UserLog";
+import CheckKeyword from "../_components/CheckKeyWord/Checkkeyword";
+import Header from "../_components/Header/Header";
+import SerectCategory from "../_components/SerectCategory/SerectCategory";
+import UserLog from "../_components/UserLog/UserLog";
 import styles from "./page.module.css";
 export default function HomeMain(){
     const PageTitle ="購入する"
