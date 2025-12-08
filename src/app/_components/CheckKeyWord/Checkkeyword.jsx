@@ -6,7 +6,7 @@ import styles from "./Checkkeyword.module.css";
 export default function CheckKeyword(){
     const [searchWord, setSearchWord] = useState("");
     return (
-        <>
+        <>          
             <form
                 onSubmit={(e) => {
                     e.preventDefault();

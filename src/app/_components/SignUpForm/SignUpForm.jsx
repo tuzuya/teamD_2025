@@ -100,8 +100,13 @@ export default function SignUpForm(){
                 <input
                     type="email"
                     value={values.email}
+                    //入力されるたびにstate更新＋errorのクリア
+                    //→入力が終わったタイミングでバリデーション実行して、最終的なerrorをstateにセットする
                     onChange={(e) => handleChange("email", e.target.value)}
-                    onBlur={(e) => validateEmail(e.target.value)}
+                    onBlur={(e) => setErrors((prev) => ({
+                        ...prev,
+                        email: validateEmail(e.target.value)
+                    }))}
                     required
                 />
             </label>
