@@ -1,11 +1,10 @@
 import Link from "next/link";
 //./はダメ→../でOK, ./だと、現在いるディレクトリ、つまりsignupの中しか見れないので注意
-import SignUpForm from "../components/SignUpForm/SignUpForm.jsx";
+import SignUpForm from "../_components/SignUpForm/SignUpForm.jsx";
 
 export default function SignUpPage(){
     return(
         <main>
-            <h1>ユーザー登録</h1>
             <SignUpForm/>
             <div>
                 <p>すでにアカウントをお持ちですか？</p>
