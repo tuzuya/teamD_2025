@@ -55,6 +55,7 @@ return(
 
 
         <label>
+            状態：
             <input 
                 type="radio" 
                 name="condition" 
@@ -120,6 +121,7 @@ return(
       </label>
 
       <label>
+        受け渡し方法：
       <input 
         type="radio" 
         name="delivery" 
