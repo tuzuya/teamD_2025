@@ -5,6 +5,7 @@ import Header from "../Header/Header.jsx";
 import validateEmail from "../../_validationFunctions/validateEmail.jsx";
 import validatePassword from "../../_validationFunctions/validatePassword.jsx";
 import validateConfirmPassword from "../../_validationFunctions/validateConfirmPassword.jsx";
+import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
 
 export default function SignUpForm(){
     const [values, setValues] = useState({
@@ -23,6 +24,8 @@ export default function SignUpForm(){
     });
     //touchedは、ユーザーが触った項目にのみエラー表示を発火させるためのboolean値
     const [touched, setTouched] = useState({
+        initial:false,
+        nickname:false,
         email:false,
         password:false,
         confirmPassword:false,
@@ -36,7 +39,7 @@ export default function SignUpForm(){
 
 
     //Todo: mock用関数を利用して、データサーバとの通信時の非同期処理の仮型の作成
-    const mockSignUp = newPromise((resolve) => {
+    const mockSignUp = new Promise((resolve) => {
         setTimeout(() => {
             console.log("supabase通信時間として2秒待機");
             resolve();
@@ -47,15 +50,26 @@ export default function SignUpForm(){
         e.preventDefault();
 
         //会員登録録ボタンが押されたときに、handleSubmitですべての項目を一括バリデーション
+        //requiredCheck関数内で、必須４項目の必須チェックを実行 => requiredItemsに結果を格納
+        const requiredInitial = validateRequired(values.initial);
+        const requiredEmail = validateRequired(values.email);
+        const requiredPassword = validateRequired(values.password);
+        const requiredConfirmPassword = validateRequired(values.confirmPassword);
+        const requiredItems = requiredInitial || requiredEmail || requiredPassword || requiredConfirmPassword;
+
+        //errorsCheck関数内で、バリデーション３項目のバリデーション実行 => hasErrorに結果を格納
         const emailError = validateEmail(values.email);
         const passwordError = validatePassword(values.password);
         const confirmPasswordError = validateConfirmPassword(values.password, values.confirmPassword);
-        if(emailError && passwordError && confirmPasswordError === null){
+        const hasError = emailError || passwordError || confirmPasswordError;
+
+        if(hasError || requiredItems){
+            console.log("バリエーション失敗、エラー表示");
+        }else{
+            await mockSignUp();
             console.log("バリエーション成功、purchaseページへ遷移");
             //Todo:　Supabase認証後に画面が遷移するようにする
             router.push("/purchase");
-        }else{
-            console.log("バリエーション失敗、エラー表示")
         }
 
         //ここでぜe.target.valueとしないのか？
@@ -91,6 +105,10 @@ export default function SignUpForm(){
                     onChange = {(e) => handleChange("initial", e.target.value)}
                     required
                 />
+                <div>
+                    {touched.initial && errors.initial && (<span>{errors.initial}</span>)}
+                    {touched.initial && requiredInitial && (<span>{requiredInitial}</span>)}
+                </div>
             </label>
 
             <label>
@@ -122,6 +140,10 @@ export default function SignUpForm(){
                     }}
                     required
                 />
+                <div>
+                    {touched.email && errors.email && (<span>{errors.email}</span>)}
+                    {touched.email && requiredEmail && (<span>{requiredEmail}</span>)}
+                </div>
             </label>
 
             <label>
@@ -142,6 +164,10 @@ export default function SignUpForm(){
                     }}
                     required
                 />
+                <div>
+                    {touched.password && errors.password && (<span>{errors.password}</span>)}
+                    {touched.password && requiredPassword && (<span>{requiredPassword}</span>)}
+                </div>
             </label>
             
             <label>
@@ -162,6 +188,10 @@ export default function SignUpForm(){
                     }}
                     required
                 />
+                <div>
+                    {touched.confirmPassword && errors.confirmPassword && (<span>{errors.confirmPassword}</span>)}
+                    {touched.confirmPassword && requiredConfirmPassword && (<span>{requiredConfirmPassword}</span>)}
+                </div>
             </label>
 
             <button type="submit">登録</button>
