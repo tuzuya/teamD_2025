@@ -30,6 +30,13 @@ export default function SignUpForm(){
         password:false,
         confirmPassword:false,
     });
+    const [required, setRequired] = useState({
+        initial:null,
+        nickname:null,
+        email:null,
+        password:null,
+        confirmPassword:null,
+    });
 
     const router = useRouter();
 
@@ -39,31 +46,41 @@ export default function SignUpForm(){
 
 
     //Todo: mock用関数を利用して、データサーバとの通信時の非同期処理の仮型の作成
-    const mockSignUp = new Promise((resolve) => {
-        setTimeout(() => {
-            console.log("supabase通信時間として2秒待機");
-            resolve();
-        }, 2000)
-    })
+    const mockSignUp = () => {
+        return new Promise((resolve) => {
+            setTimeout(()=> {
+                console.log("Supabaseとの通信時間として2秒待機");
+                resolve();
+            }, 2000)
+        })
+    }
 
     const handleSubmit = async(e) => {
         e.preventDefault();
 
         //会員登録録ボタンが押されたときに、handleSubmitですべての項目を一括バリデーション
-        //requiredCheck関数内で、必須４項目の必須チェックを実行 => requiredItemsに結果を格納
-        const requiredInitial = validateRequired(values.initial);
-        const requiredEmail = validateRequired(values.email);
-        const requiredPassword = validateRequired(values.password);
-        const requiredConfirmPassword = validateRequired(values.confirmPassword);
-        const requiredItems = requiredInitial || requiredEmail || requiredPassword || requiredConfirmPassword;
+        const emptyRequiredValues ={
+            initial: validateRequired(values.initial),
+            nickname: null,
+            email: validateRequired(values.email),
+            password: validateRequired(values.password),
+            confirmPassword: validateRequired(values.confirmPassword),
+        }
+        //必須項目のうち１つでも入力してないと、テキストが返ってくるので、trueになる
+        const isEmpty = Object.values(emptyRequiredValues).some(Boolean);
+        setRequired(emptyRequiredValues);
 
-        //errorsCheck関数内で、バリデーション３項目のバリデーション実行 => hasErrorに結果を格納
-        const emailError = validateEmail(values.email);
-        const passwordError = validatePassword(values.password);
-        const confirmPasswordError = validateConfirmPassword(values.password, values.confirmPassword);
-        const hasError = emailError || passwordError || confirmPasswordError;
+        const submitErrors = {
+            initial: null,
+            nickname: null,
+            email: validateEmail(values.email),
+            password: validatePassword(values.password),
+            confirmPassword: validateConfirmPassword(values.password, values.confirmPassword),
+        }
+        const isError = Object.values(submitErrors).some(Boolean);
+        setErrors(submitErrors);
 
-        if(hasError || requiredItems){
+        if(isEmpty || isError){
             console.log("バリエーション失敗、エラー表示");
         }else{
             await mockSignUp();
@@ -77,6 +94,8 @@ export default function SignUpForm(){
         //e.target.valueはonChangeの時に使う
         //Todo: Supabase連携後にデータ送信の処理を追加する
         console.log("入力されたデータ:", values);
+        console.log("required:", emptyRequiredValues);
+        console.log("errors:", submitErrors);
     }
 
     const handleChange = (fieldName, newValue) => {
@@ -103,11 +122,9 @@ export default function SignUpForm(){
                     value={values.initial}
                     //入力値が変更されたらStateを更新する
                     onChange = {(e) => handleChange("initial", e.target.value)}
-                    required
                 />
                 <div>
-                    {touched.initial && errors.initial && (<span>{errors.initial}</span>)}
-                    {touched.initial && requiredInitial && (<span>{requiredInitial}</span>)}
+                    {required.initial && (<span>{required.initial}</span>)}
                 </div>
             </label>
 
@@ -138,11 +155,10 @@ export default function SignUpForm(){
                             email: true
                         }));
                     }}
-                    required
                 />
                 <div>
                     {touched.email && errors.email && (<span>{errors.email}</span>)}
-                    {touched.email && requiredEmail && (<span>{requiredEmail}</span>)}
+                    {required.email && (<span>{required.email}</span>)}
                 </div>
             </label>
 
@@ -162,11 +178,10 @@ export default function SignUpForm(){
                             password: true
                         }));
                     }}
-                    required
                 />
                 <div>
                     {touched.password && errors.password && (<span>{errors.password}</span>)}
-                    {touched.password && requiredPassword && (<span>{requiredPassword}</span>)}
+                    {required.password && (<span>{required.password}</span>)}
                 </div>
             </label>
             
@@ -186,11 +201,10 @@ export default function SignUpForm(){
                             confirmPassword: true
                         }));
                     }}
-                    required
                 />
                 <div>
                     {touched.confirmPassword && errors.confirmPassword && (<span>{errors.confirmPassword}</span>)}
-                    {touched.confirmPassword && requiredConfirmPassword && (<span>{requiredConfirmPassword}</span>)}
+                    {required.confirmPassword && (<span>{required.confirmPassword}</span>)}
                 </div>
             </label>
 

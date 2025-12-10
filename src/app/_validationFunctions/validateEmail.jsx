@@ -1,6 +1,6 @@
 export default function validateEmail(email){
     //大学メルアド用のjavascript正規表現
-    const regex = /^.+@shibaura\.ac\.jp$/;
+    const regex = /^.+@shibaura-it\.ac\.jp$/;
     const isValid = regex.test(email);
     if(isValid == false){
         return ("大学のメールアドレスを入力して下さい");
