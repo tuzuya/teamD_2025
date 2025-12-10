@@ -4,9 +4,12 @@ import Header from "../components/Header/Header";
 import SerectCategory from "../components/SerectCategory/SerectCategory";
 import UserLog from "../components/UserLog/UserLog";
 import styles from "./page.module.css";
+
+
 export default function HomeMain(){
-    const PageTitle ="購入する"
-    const ImgSrc="/cart.png"
+    const PageTitle ="購入する";
+    const ImgSrc="/cart.png";
+
     return (
         <>
         <header>
@@ -26,3 +29,5 @@ export default function HomeMain(){
         </>
     );
 }
+
+
