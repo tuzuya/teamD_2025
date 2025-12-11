@@ -10,6 +10,7 @@ export default function SellForm(){
     const [condition, setCondition] = useState("新品未使用"); 
     const [deliveryMethod, setDeliveryMethod] = useState("大宮キャンパス"); 
 
+    
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -22,17 +23,18 @@ export default function SellForm(){
 
 return(
     <form className="sell-form" onSubmit={handleSubmit}>
-        <label>
+    <div >
+        <label className="modal-form">
             科目名:
-            <input
-                type="text"
-                value={subjectName}
-                onChange={(e) => setSubjectName(e.target.value)}
-                required
-            />
+          <input
+            type="text"
+            value={subjectName}
+            onChange={(e) => setSubjectName(e.target.value)}
+            required
+          />
         </label>
-
-        <label>
+       </div>
+        <label className="modal-form">
             教科書名:
             <input
                 type="text"
@@ -42,7 +44,7 @@ return(
             />
         </label>
 
-        <label>
+        <label className="modal-form"　>
             希望価格:
             <input
                 type="text"
@@ -56,6 +58,7 @@ return(
 
         <label>
             状態：
+
             <input 
                 type="radio" 
                 name="condition" 
