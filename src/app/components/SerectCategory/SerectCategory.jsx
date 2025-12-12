@@ -1,13 +1,23 @@
 "use client";
+import { majorDetail } from "../data/arrays";
 import styles from "./SerectCategory.module.css";
 
-
-export default function SerectCategory({categoryWord}){
+export default function SerectCategory({imgSorce,categoryWord,onClick,open,insideObject}){
     return (
         <>
-            <button className={styles.SerectCategory}>
-                <div className={styles.CategoryTxt}>{categoryWord}</div>
+            <div className={`${styles.serectCategoryBox} ${open ? styles.active : ""}`}>
+            <button className={` ${styles.SerectCategory} ${open ? styles.active : ""}`} onClick={onClick}>
+                {imgSorce && 
+                <div className={styles.categoryIconBox}>
+                    <img src={imgSorce} alt={categoryWord} className={styles.categoryIcon} />
+                </div>
+                }
+            
+                <p className={styles.CategoryTxt}>{categoryWord}</p>
             </button>
+            {open && insideObject}
+            </div>
+            
         </>
     );
 }

@@ -1,0 +1,37 @@
+.HambargerMenu{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000000A8;
+    width: 100%;
+    position: absolute;
+    z-index: 100;
+    padding:15px 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.0s  
+}
+
+.HambargerMenu.active{
+    opacity: 1;
+    pointer-events:all;
+}
+
+
+.MenuList{
+    width:calc(100% - 20px * 2);
+}
+
+.MenuItem{
+    width: 100%;
+    list-style: none;
+}
+
+.MenuItem:not(:first-child){
+    border-top: 1px solid var(--gray-color);
+}
+
+.MenuItem:first-child{
+    border-radius: 5px 5px 0 0;
+}
+
