@@ -20,14 +20,18 @@
 
 .inputLabel {
     display: flex;
-    flex-direction: row;;
+    flex-direction: row;
+    font-size: 18px;
 }
 
 .requiredBadge {
     color: var(--white-color);
     background-color: rgb(209, 2, 2);
     font-size: 8px;
+    margin-top: 3px;
     margin-left: 15px;
+    padding-left: 2px;
+    padding-right: 2px;
     padding-top: 7px;
     border-radius: 5px;
 }

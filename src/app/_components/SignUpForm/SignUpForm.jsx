@@ -128,7 +128,9 @@ export default function SignUpForm(){
             </label>
 
             <label className={style.inputContainer}>
-                ニックネーム
+                <label>
+                    ニックネーム
+                </label>
                 <input
                     type="text"
                     placeholder="例) shiba"
