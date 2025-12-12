@@ -1,5 +1,7 @@
 "use client";
+import { useState } from "react";
 import CheckKeyword from "../components/CheckKeyWord/Checkkeyword";
+import { options } from "../components/data/arrays";
 import Header from "../components/Header/Header";
 import SerectCategory from "../components/SerectCategory/SerectCategory";
 import UserLog from "../components/UserLog/UserLog";
@@ -9,7 +11,7 @@ import styles from "./page.module.css";
 export default function HomeMain(){
     const PageTitle ="購入する";
     const ImgSrc="/cart.png";
-
+    const [openIndex, setOpenIndex] = useState(null);
     return (
         <>
         <header>
@@ -21,13 +23,19 @@ export default function HomeMain(){
                 <CheckKeyword/>
             </div>
             <div className={styles.SerectCategorys}>
-            <SerectCategory categoryWord={"学部・学科から探す"}/>
-                <SerectCategory categoryWord={"学年・学期で探す"}/>
-                <SerectCategory categoryWord={"科目でさがす"}/>
+                {options.map((option,index) =>(
+                    <SerectCategory 
+                    key={option.label}
+                    categoryWord={option.label}
+                    onClick={()=>setOpenIndex(openIndex === index ? null : index)}
+                    open={openIndex === index}
+                    insideObject={
+                    <SerectCategory imgSorce={"/enginerring.png"} categoryWord={"工学部"}/>}
+                    />
+                ))}
             </div>
         </main>
         </>
     );
 }
-
 

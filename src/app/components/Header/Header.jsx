@@ -5,10 +5,6 @@ import HambargerMenu from "../HambargerMenu/HambargerMenu";
 import styles from "./Header.module.css";
 
 export default function Header( {pageTitle, imgSrc} ){
-    const handleClick = () => {
-        console.log("クリックされたよ！");
-    }
-
     const [open,setOpen] = useState(false);
 
 
