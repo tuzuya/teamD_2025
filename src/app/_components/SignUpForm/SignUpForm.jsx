@@ -6,6 +6,8 @@ import validateEmail from "../../_validationFunctions/validateEmail.jsx";
 import validatePassword from "../../_validationFunctions/validatePassword.jsx";
 import validateConfirmPassword from "../../_validationFunctions/validateConfirmPassword.jsx";
 import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
+import style from "./SignUpForm.module.css";
+import Link from "next/link";
 
 export default function SignUpForm(){
     const [values, setValues] = useState({
@@ -39,11 +41,6 @@ export default function SignUpForm(){
     });
 
     const router = useRouter();
-
-    //Headerに与える引数定義
-    const pageTitle = "会員登録";
-    const imgSrc = "";
-
 
     //Todo: mock用関数を利用して、データサーバとの通信時の非同期処理の仮型の作成
     const mockSignUp = () => {
@@ -110,37 +107,45 @@ export default function SignUpForm(){
     }
 
     return(
-        <form onSubmit={handleSubmit}>
-            <header>
-                <Header pageTitle={pageTitle} imgSrc={imgSrc}/>
-            </header>
-            <label>
-                イニシャル(必須)
+        <form onSubmit={handleSubmit} className={style.formContainer}>
+            <label className={style.inputContainer}>
+                <label className={style.inputLabel}>
+                    イニシャル
+                    <span className={style.requiredBadge}>必須</span>
+                </label>
                 <input
                 //Todo: イニシャルの入力ボックスは簡易的にしているので、後で修正する
                     type="text"
+                    placeholder="例）山田 太郎→YT"
                     value={values.initial}
                     //入力値が変更されたらStateを更新する
                     onChange = {(e) => handleChange("initial", e.target.value)}
+                    className={style.inputBox}
                 />
                 <div>
-                    {required.initial && (<span>{required.initial}</span>)}
+                    {required.initial && (<div>{required.initial}</div>)}
                 </div>
             </label>
 
-            <label>
+            <label className={style.inputContainer}>
                 ニックネーム
                 <input
                     type="text"
+                    placeholder="例) shiba"
                     value={values.nickname}
                     onChange={(e) => handleChange("nickname", e.target.value)}
+                    className={style.inputBox}
                 />
             </label>
 
-            <label>
-                G-mail(必須)
+            <label className={style.inputContainer}>
+                <label className={style.inputLabel}>
+                    G-mail
+                    <span className={style.requiredBadge}>必須</span>
+                </label>
                 <input
                     type="email"
+                    placeholder="例) AX00000@shibaura-it.ac.jp"
                     value={values.email}
                     //入力されるたびにstate更新＋errorのクリア
                     //→入力が終わったタイミングでバリデーション実行して、最終的なerrorをstateにセットする
@@ -155,17 +160,22 @@ export default function SignUpForm(){
                             email: true
                         }));
                     }}
+                    className={style.inputBox}
                 />
                 <div>
-                    {touched.email && errors.email && (<span>{errors.email}</span>)}
-                    {required.email && (<span>{required.email}</span>)}
+                    {touched.email && errors.email && (<div>{errors.email}</div>)}
+                    {required.email && (<div>{required.email}</div>)}
                 </div>
             </label>
 
-            <label>
-                パスワード
+            <label className={style.inputContainer}>
+                <label className={style.inputLabel}>
+                    パスワード
+                    <span className={style.requiredBadge}>必須</span>
+                </label>
                 <input
                     type="password"
+                    placeholder="8文字以上"
                     value={values.password}
                     onChange={(e) => handleChange("password", e.target.value)}
                     onBlur={(e) => {
@@ -178,17 +188,22 @@ export default function SignUpForm(){
                             password: true
                         }));
                     }}
+                    className={style.inputBox}
                 />
                 <div>
-                    {touched.password && errors.password && (<span>{errors.password}</span>)}
-                    {required.password && (<span>{required.password}</span>)}
+                    {touched.password && errors.password && (<div>{errors.password}</div>)}
+                    {required.password && (<div>{required.password}</div>)}
                 </div>
             </label>
             
-            <label>
-                パスワード(確認用)
+            <label className={style.inputContainer}>
+                <label className={style.inputLabel}>
+                    パスワード(確認用)
+                <span className={style.requiredBadge}>必須</span>
+                </label>
                 <input
                     type="password"
+                    placeholder="もう一度パスワードを入力して下さい"
                     value={values.confirmPassword}
                     onChange={(e) => handleChange("confirmPassword", e.target.value)}
                     onBlur={(e) => {
@@ -201,14 +216,23 @@ export default function SignUpForm(){
                             confirmPassword: true
                         }));
                     }}
+                    className={style.inputBox}
                 />
                 <div>
-                    {touched.confirmPassword && errors.confirmPassword && (<span>{errors.confirmPassword}</span>)}
-                    {required.confirmPassword && (<span>{required.confirmPassword}</span>)}
+                    {touched.confirmPassword && errors.confirmPassword && (<div>{errors.confirmPassword}</div>)}
+                    {required.confirmPassword && (<div>{required.confirmPassword}</div>)}
                 </div>
             </label>
 
-            <button type="submit">登録</button>
+            <div className={style.signInLinkContainer}>
+                <p>すでにアカウントをお持ちですか？</p>
+                {/*ここは、nextの機能で「/フォルダ名」でリンクとして使える */}
+                <Link href="/signin" className={style.signInLink}>サインインはこちら</Link>
+            </div>
+
+            <footer className={style.formFooter}>
+                <button type="submit" className={style.setButton}>会&nbsp;員&nbsp;登&nbsp;録</button>
+            </footer>
         </form>
             
     )
