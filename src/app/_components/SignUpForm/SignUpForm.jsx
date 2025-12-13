@@ -129,9 +129,9 @@ export default function SignUpForm(){
             </label>
 
             <label className={style.inputContainer}>
-                <label>
+                <label className={style.inputLabel}>
                     <span className={style.labelText}>ニックネーム</span>
-                    <span className={style.supplement}>※&nbsp;ニックネームを設定しなかった場合<br />イニシャルがプロフィールに表示</span>
+                    <span className={style.supplement}>※&nbsp;ニックネームを設定しなかった場合イニシャルがプロフィールに表示</span>
                 </label>
                 <input
                     type="text"
@@ -144,8 +144,9 @@ export default function SignUpForm(){
 
             <label className={style.inputContainer}>
                 <label className={style.inputLabel}>
-                    G-mail
+                    <span className={style.labelText}>G-mail</span>
                     <span className={style.requiredBadge}>必須</span>
+                    <span className={style.supplement}>※&nbsp;大学のメールアドレスを入力</span>
                 </label>
                 <input
                     type="email"
