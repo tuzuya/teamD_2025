@@ -110,8 +110,9 @@ export default function SignUpForm(){
         <form onSubmit={handleSubmit} className={style.formContainer}>
             <label className={style.inputContainer}>
                 <label className={style.inputLabel}>
-                    イニシャル
+                    <span className={style.labelText}>イニシャル</span>
                     <span className={style.requiredBadge}>必須</span>
+                    <span className={style.supplement}>※&nbsp;半角入力</span>
                 </label>
                 <input
                 //Todo: イニシャルの入力ボックスは簡易的にしているので、後で修正する
@@ -129,7 +130,8 @@ export default function SignUpForm(){
 
             <label className={style.inputContainer}>
                 <label>
-                    ニックネーム
+                    <span className={style.labelText}>ニックネーム</span>
+                    <span className={style.supplement}>※&nbsp;ニックネームを設定しなかった場合<br />イニシャルがプロフィールに表示</span>
                 </label>
                 <input
                     type="text"

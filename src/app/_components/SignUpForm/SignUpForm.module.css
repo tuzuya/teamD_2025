@@ -11,7 +11,6 @@
 .inputContainer {
     display: flex;
     flex-direction: column;
-    font-weight: bold;
     margin-top: 10px;
     margin-bottom: 20px;
     margin-left: 15px;
@@ -24,16 +23,33 @@
     font-size: 18px;
 }
 
+.labelText {
+    font-weight: bold;
+    font-size: 1.1em;
+    flex-shrink: 0;
+}
+
 .requiredBadge {
     color: var(--white-color);
     background-color: rgb(209, 2, 2);
     font-size: 8px;
+    font-weight: bold;
     margin-top: 3px;
     margin-left: 15px;
     padding-left: 2px;
     padding-right: 2px;
     padding-top: 7px;
     border-radius: 5px;
+}
+
+.supplement {
+    padding-top: 7px;
+    margin-left: 20px;
+    font-size: 0.7em;
+    color: #666;
+    line-height: 1.4em;
+    width: 200px;
+    flex-shrink: 0;
 }
 
 .inputBox {
