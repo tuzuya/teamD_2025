@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Header from "../Header/Header.jsx";
 import validateEmail from "../../_validationFunctions/validateEmail.jsx";
 import validatePassword from "../../_validationFunctions/validatePassword.jsx";
+import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
 import style from "./SignInForm.module.css";
 import Link from "next/link";
 
