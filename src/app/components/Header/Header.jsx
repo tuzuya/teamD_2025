@@ -1,9 +1,13 @@
 "use client";
-
-import HambargarMenu from "../HambargarMenu/HambargarMenu";
+import { useState } from "react";
+import HambargerBtn from "../HambargerBtn/HambargerBtn";
+import HambargerMenu from "../HambargerMenu/HambargerMenu";
 import styles from "./Header.module.css";
 
 export default function Header( {pageTitle, imgSrc} ){
+    const [open,setOpen] = useState(false);
+
+
     return (
         <header className={styles.Header}>
             <div className={styles.HeaderMeta}>
@@ -25,8 +29,9 @@ export default function Header( {pageTitle, imgSrc} ){
                     {imgSrc && <img className={styles.HeaderIcon} src={imgSrc} alt={pageTitle} />}
                     <h2 className={styles.HeaderTitle}>{pageTitle}</h2>
                 </div>
-                <HambargarMenu/>
+                <HambargerBtn onClick={() => setOpen(!open)} open={open}/>
             </div>
+            <HambargerMenu open={open} />
         </header>
     );
 }
