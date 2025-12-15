@@ -1,0 +1,89 @@
+.labelContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+.inputLabel {
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+}
+
+.labelText {
+    font-weight: bold;
+    font-size: 1.1em;
+    flex-shrink: 0;
+}
+
+.requiredBadge {
+    color: var(--white-color);
+    background-color: rgb(209, 2, 2);
+    font-size: 8px;
+    font-weight: bold;
+    margin-top: 3px;
+    margin-left: 15px;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-top: 7px;
+    border-radius: 5px;
+}
+
+.supplement {
+    padding-top: 7px;
+    margin-left: 10px;
+    font-size: 0.7em;
+    color: #666;
+    line-height: 1.4;
+    width: 220px;
+    flex-shrink: 0;
+}
+
+.inputBox {
+    width: 100%;
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #FFFCFC;
+}
+
+.signInLinkContainer {
+    padding-left: 15px;
+}
+.signInLink {
+    color: var(--primary-color); 
+}
+
+.formFooter {
+    display: flex;
+    justify-content: center;
+}
+
+.setButton {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 75%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: "Zen Maru Gothic", sans-serif;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-radius: 17px;
+}
+
