@@ -1,4 +1,4 @@
-import SellForm from "../components/sellForm/sellForm.jsx";
+import SellForm from "../_components/sellForm/sellForm.jsx";
 
 export default function SellPage() {
     return (
