@@ -1,9 +1,13 @@
 import SellForm from "../_components/sellForm/sellForm.jsx";
+import Header from "../_components/Header/Header.jsx";
 
 export default function SellPage() {
+    const pageTitle = "出品ページ";
+    const imgSrc = "/sell/picturebutton.png";
     return (
         <div>
-            <h1>出品ページ</h1>
+            <Header pageTitle={pageTitle} imgSrc={imgSrc}/>
+            
             <SellForm />
         </div>
     );
