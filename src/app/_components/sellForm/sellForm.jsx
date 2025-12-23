@@ -12,6 +12,7 @@ export default function SellForm(){
     const [deliveryMethod, setDeliveryMethod] = useState("大宮キャンパス"); 
 
     
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -45,6 +46,23 @@ return(
         <label>
             教科書名
             <div className="sell-form">
+        
+    }
+
+return(
+    <form onSubmit={handleSubmit}>
+        <label>
+            科目名:
+            <input
+                type="text"
+                value={subjectName}
+                onChange={(e) => setSubjectName(e.target.value)}
+                required
+            />
+        </label>
+
+        <label>
+            教科書名:
             <input
                 type="text"
                 value={textbookName}
@@ -194,6 +212,24 @@ return(
     </div>
 
     <button type="submit">出品</button>
+    </form>
+)
+}
+                required
+            />
+        </label>
+
+        <label>
+            希望価格:
+            <input
+                type="text"
+                value={desiredPrice}
+                onChange={(e) => setDesiredPrice(e.target.value)}
+                required
+            />
+        </label>
+
+        <button type="submit">出品</button>
     </form>
 )
 }
