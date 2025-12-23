@@ -54,6 +54,7 @@ export default function SignInForm(){
             email: validateEmail(values.email),
             password: validatePassword(values.password),
         };
+        const isError = Object.values(submitErrors).some(Boolean);
         setErrors(submitErrors);
 
         if(isEmpty || isError){
