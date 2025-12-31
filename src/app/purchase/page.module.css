@@ -1,4 +1,8 @@
-
+.headerWrraper{
+    position:sticky;
+    top:0;
+    z-index: 999;
+}
 
 .CheckKeyword {
     display: flex;
@@ -13,4 +17,11 @@
     justify-content: center;
     gap: 32px;
     margin-top: 40px;
+    padding:0 16px;
+}
+
+.sendBtn{
+    position:fixed;
+    bottom:32px;
+    right:20px;
 }

@@ -39,7 +39,7 @@ export default function SerectCategory({imgSorce,categoryWord,children}){
     return (
         <>
             <div className={`${styles.serectCategoryBox} ${isOpen ? styles.active : ""}`}>
-                <button className={` ${styles.SerectCategory} ${isOpen ? styles.active : ""}`} onClick={handleClick}>
+                <button type="button" className={` ${styles.SerectCategory} ${isOpen ? styles.active : ""}`} onClick={handleClick}>
                     {imgSorce && 
                     <div className={styles.categoryIconBox}>
                         <img src={imgSorce} alt={categoryWord} className={styles.categoryIcon} />

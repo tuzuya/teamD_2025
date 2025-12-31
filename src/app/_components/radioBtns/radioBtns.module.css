@@ -1,0 +1,15 @@
+.radioDd{
+    display: flex;
+    align-items: center;
+    gap:8px;
+    height:48px;
+}
+
+.radioDd:not(:first-child){
+    margin-top: 1px;
+}
+
+.radioLabel{
+    display: inline-block;
+    width: 90%;
+}
