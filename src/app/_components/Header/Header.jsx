@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import HambargerBtn from "../HambargerBtn/HambargerBtn";
-import HambargerMenu from "../HambargerMenu/HambargerMenu";
+import HeaderMenu from "../HeaderMenu/HeaderMenu";
 import styles from "./Header.module.css";
 
 export default function Header( {pageTitle, imgSrc} ){
@@ -31,7 +31,7 @@ export default function Header( {pageTitle, imgSrc} ){
                 </div>
                 <HambargerBtn onClick={() => setOpen(!open)} open={open}/>
             </div>
-            <HambargerMenu open={open} />
+            <HeaderMenu open={open} />
         </header>
     );
 }

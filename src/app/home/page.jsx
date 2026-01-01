@@ -1,11 +1,10 @@
 "use client";
 import { useState } from "react";
-import CheckKeyword from "../components/CheckKeyWord/Checkkeyword";
-import { options } from "../components/data/arrays";
-import Header from "../components/Header/Header";
-import SerectCategory from "../components/SerectCategory/SerectCategory";
-import UserLog from "../components/UserLog/UserLog";
-import styles from "./page.module.css";
+import CheckKeyword from "../_components/CheckKeyWord/Checkkeyword";
+import { options } from "../_components/data/arrays";
+import Header from "../_components/Header/Header";
+import SerectCategory from "../_components/SerectCategory/SerectCategory";
+import UserLog from "../_components/UserLog/UserLog";
 
 
 export default function HomeMain(){
@@ -15,14 +14,14 @@ export default function HomeMain(){
     return (
         <>
         <header>
-            <Header className="Header" pageTitle={PageTitle} imgSrc={ImgSrc}/>
+            <Header pageTitle={PageTitle} imgSrc={ImgSrc}/>
         </header>
         <main>
             <UserLog/>
-            <div className={styles.CheckKeyword}>
+            <div>
                 <CheckKeyword/>
             </div>
-            <div className={styles.SerectCategorys}>
+            <div>
                 {options.map((option,index) =>(
                     <SerectCategory 
                     key={option.label}

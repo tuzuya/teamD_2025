@@ -1,21 +1,59 @@
 "use client";
-import { majorDetail } from "../data/arrays";
+import { useEffect, useRef,useState } from "react";
 import styles from "./SerectCategory.module.css";
+import gsap from "gsap";
 
-export default function SerectCategory({imgSorce,categoryWord,onClick,open,insideObject}){
+const closingAnim = function (content) {
+  gsap.to(content, {
+    height: 0,
+    autoAlpha: 0,
+    duration: 0.5,
+    ease: "Power4.inOut",
+  });
+};
+
+const openingAnim = function (content) {
+  gsap.to(content, {
+    height: "auto",
+    autoAlpha: 1,
+    duration: 0.5,
+    ease: "Power4.inOut",
+  });
+};
+
+
+export default function SerectCategory({imgSorce,categoryWord,children}){
+    const contentRef = useRef(null);
+    const [isOpen,setIsOpen]=useState(false);
+    const handleClick=()=>{
+    setIsOpen(prev => !prev);
+    }
+    useEffect(() => {
+        if (!contentRef.current) return;
+        if (isOpen) {
+            openingAnim(contentRef.current);
+        } else {
+            closingAnim(contentRef.current);
+        }
+    }, [isOpen]);
     return (
         <>
-            <div className={`${styles.serectCategoryBox} ${open ? styles.active : ""}`}>
-            <button className={` ${styles.SerectCategory} ${open ? styles.active : ""}`} onClick={onClick}>
-                {imgSorce && 
-                <div className={styles.categoryIconBox}>
-                    <img src={imgSorce} alt={categoryWord} className={styles.categoryIcon} />
+            <div className={`${styles.serectCategoryBox} ${isOpen ? styles.active : ""}`}>
+                <button type="button" className={` ${styles.SerectCategory} ${isOpen ? styles.active : ""}`} onClick={handleClick}>
+                    {imgSorce && 
+                    <div className={styles.categoryIconBox}>
+                        <img src={imgSorce} alt={categoryWord} className={styles.categoryIcon} />
+                    </div>
+                    }
+                
+                    <p className={styles.CategoryTxt}>{categoryWord}</p>
+                </button>
+                <div 
+                    ref={contentRef}
+                    className={`${styles.categoryChildren} ${isOpen ? styles.active : ""}`}
+                >
+                    {children}
                 </div>
-                }
-            
-                <p className={styles.CategoryTxt}>{categoryWord}</p>
-            </button>
-            {open && insideObject}
             </div>
             
         </>

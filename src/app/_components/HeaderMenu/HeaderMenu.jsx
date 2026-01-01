@@ -1,8 +1,8 @@
 "use client";
 import HeaderMenuBtn from "../HeaderMenuBtn/HeaderMenuBtn";
-import styles from "./HambargerMenu.module.css"
+import styles from "./HeaderMenu.module.css"
 
-export default function HambargerMenu({open}){
+export default function HeaderMenu({open}){
     return (
     <>
     <nav className={`${styles.HambargerMenu} ${open ? styles.active : ""}`}>
