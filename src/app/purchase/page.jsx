@@ -1,11 +1,11 @@
 "use client";
-import CheckKeyword from "../_components/CheckKeyWord/Checkkeyword";
-import { options } from "../_components/data/arrays";
-import Header from "../_components/Header/Header";
-import RadioBtns from "../_components/radioBtns/radioBtns";
-import SendBtn from "../_components/SendBtn/SendBtn";
-import SerectCategory from "../_components/SerectCategory/SerectCategory";
-import UserLog from "../_components/UserLog/UserLog";
+import CheckKeyword from "../components/CheckKeyWord/Checkkeyword";
+import { options } from "../components/data/arrays";
+import Header from "../components/Header/Header";
+import RadioBtns from "../components/radioBtns/radioBtns";
+import SendBtn from "../components/SendBtn/SendBtn";
+import SerectCategory from "../components/SerectCategory/SerectCategory";
+import UserLog from "../components/UserLog/UserLog";
 import styles from "./page.module.css";
 
 
