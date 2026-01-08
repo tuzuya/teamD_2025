@@ -8,6 +8,7 @@ import validateConfirmPassword from "../../_validationFunctions/validateConfirmP
 import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
 import style from "./SignUpForm.module.css";
 import Link from "next/link";
+import { supabase } from "./src/app/utils/supabase.js";
 
 export default function SignUpForm(){
     const [values, setValues] = useState({
@@ -48,6 +49,39 @@ export default function SignUpForm(){
         })
     }
 
+    //Supabase Auth への登録用関数
+    const supabaseAuthentication = async(email, password, nickname) => {
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+        })
+
+        //エラーならここでストップ
+        if(authError){
+            console.error("supabase authの認証エラー:", authError.message);
+            alert("会員登録に失敗しました:", authError.message)
+            return
+        }
+
+        //成功したら、続けてProfilesテーブルにデータを作成
+        if(authData.user){
+            const{ error: profileError } = await supabase
+                .from("profiles")
+                .insert({
+                    id: authData.user.id,
+                    user_name: nickname,
+                    //Todo: 学部や学年などは後でここに追加
+                })
+
+            if(profileError){
+                console.error("プロフィール作成エラー:", profileError.message)
+            }else{
+                console.log("認証完了！")
+            }
+        }
+        }
+    }
+
     const handleSubmit = async(e) => {
         e.preventDefault();
 
@@ -83,7 +117,8 @@ export default function SignUpForm(){
         //ここでぜe.target.valueとしないのか？
         //A. onSubmitの時は、e.targetは<form>タグを指すので、valueがないから。
         //e.target.valueはonChangeの時に使う
-        //Todo: Supabase連携後にデータ送信の処理を追加する
+        supabaseAuthentication(values.email, values.password, values.nickname);
+        
         console.log("入力されたデータ:", values);
         console.log("required:", emptyRequiredValues);
         console.log("errors:", submitErrors);
