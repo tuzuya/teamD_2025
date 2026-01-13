@@ -8,7 +8,7 @@ import validateConfirmPassword from "../../_validationFunctions/validateConfirmP
 import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
 import style from "./SignUpForm.module.css";
 import Link from "next/link";
-import { supabase } from "./src/app/utils/supabase.js";
+import { supabase } from "../../utils/supabase.js";
 
 export default function SignUpForm(){
     const [values, setValues] = useState({
@@ -50,7 +50,7 @@ export default function SignUpForm(){
     }
 
     //Supabase Auth への登録用関数
-    const supabaseAuthentication = async(email, password, nickname) => {
+    const supabaseRegistration = async(email, password, nickname) => {
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
             password: password,
@@ -76,9 +76,8 @@ export default function SignUpForm(){
             if(profileError){
                 console.error("プロフィール作成エラー:", profileError.message)
             }else{
-                console.log("認証完了！")
+                console.log("登録完了！")
             }
-        }
         }
     }
 
@@ -117,7 +116,7 @@ export default function SignUpForm(){
         //ここでぜe.target.valueとしないのか？
         //A. onSubmitの時は、e.targetは<form>タグを指すので、valueがないから。
         //e.target.valueはonChangeの時に使う
-        supabaseAuthentication(values.email, values.password, values.nickname);
+        supabaseRegistration(values.email, values.password, values.nickname);
         
         console.log("入力されたデータ:", values);
         console.log("required:", emptyRequiredValues);
