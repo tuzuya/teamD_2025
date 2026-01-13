@@ -8,17 +8,16 @@ import validateConfirmPassword from "../../_validationFunctions/validateConfirmP
 import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
 import style from "./SignUpForm.module.css";
 import Link from "next/link";
+import { supabase } from "../../utils/supabase.js";
 
 export default function SignUpForm(){
     const [values, setValues] = useState({
-        initial:"",
         nickname:"",
         email:"",
         password:"",
         confirmPassword:"",
     });
     const [errors, setErrors] = useState({
-        initial:null,
         nickname:null,
         email:null,
         password:null,
@@ -26,14 +25,12 @@ export default function SignUpForm(){
     });
     //touchedは、ユーザーが触った項目にのみエラー表示を発火させるためのboolean値
     const [touched, setTouched] = useState({
-        initial:false,
         nickname:false,
         email:false,
         password:false,
         confirmPassword:false,
     });
     const [required, setRequired] = useState({
-        initial:null,
         nickname:null,
         email:null,
         password:null,
@@ -52,13 +49,44 @@ export default function SignUpForm(){
         })
     }
 
+    //Supabase Auth への登録用関数
+    const supabaseRegistration = async(email, password, nickname) => {
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+        })
+
+        //エラーならここでストップ
+        if(authError){
+            console.error("supabase authの認証エラー:", authError.message);
+            alert("会員登録に失敗しました:", authError.message)
+            return
+        }
+
+        //成功したら、続けてProfilesテーブルにデータを作成
+        if(authData.user){
+            const{ error: profileError } = await supabase
+                .from("profiles")
+                .insert({
+                    id: authData.user.id,
+                    user_name: nickname,
+                    //Todo: 学部や学年などは後でここに追加
+                })
+
+            if(profileError){
+                console.error("プロフィール作成エラー:", profileError.message)
+            }else{
+                console.log("登録完了！")
+            }
+        }
+    }
+
     const handleSubmit = async(e) => {
         e.preventDefault();
 
         //会員登録録ボタンが押されたときに、handleSubmitですべての項目を一括バリデーション
         const emptyRequiredValues ={
-            initial: validateRequired(values.initial),
-            nickname: null,
+            nickname: validateRequired(values.nickname),
             email: validateRequired(values.email),
             password: validateRequired(values.password),
             confirmPassword: validateRequired(values.confirmPassword),
@@ -68,7 +96,6 @@ export default function SignUpForm(){
         setRequired(emptyRequiredValues);
 
         const submitErrors = {
-            initial: null,
             nickname: null,
             email: validateEmail(values.email),
             password: validatePassword(values.password),
@@ -89,7 +116,8 @@ export default function SignUpForm(){
         //ここでぜe.target.valueとしないのか？
         //A. onSubmitの時は、e.targetは<form>タグを指すので、valueがないから。
         //e.target.valueはonChangeの時に使う
-        //Todo: Supabase連携後にデータ送信の処理を追加する
+        supabaseRegistration(values.email, values.password, values.nickname);
+        
         console.log("入力されたデータ:", values);
         console.log("required:", emptyRequiredValues);
         console.log("errors:", submitErrors);
@@ -110,27 +138,8 @@ export default function SignUpForm(){
         <form onSubmit={handleSubmit} className={style.formContainer}>
             <label className={style.inputContainer}>
                 <label className={style.inputLabel}>
-                    <span className={style.labelText}>イニシャル</span>
-                    <span className={style.requiredBadge}>必須</span>
-                    <span className={style.supplement}>※&nbsp;半角入力</span>
-                </label>
-                <input
-                //Todo: イニシャルの入力ボックスは簡易的にしているので、後で修正する
-                    type="text"
-                    placeholder="例）山田 太郎→YT"
-                    value={values.initial}
-                    //入力値が変更されたらStateを更新する
-                    onChange = {(e) => handleChange("initial", e.target.value)}
-                    className={style.inputBox}
-                />
-                <div>
-                    {required.initial && (<div>{required.initial}</div>)}
-                </div>
-            </label>
-
-            <label className={style.inputContainer}>
-                <label className={style.inputLabel}>
                     <span className={style.labelText}>ニックネーム</span>
+                    <span className={style.requiredBadge}>必須</span>
                     <span className={style.supplement}>※&nbsp;ニックネームを設定しなかった場合イニシャルがプロフィールに表示</span>
                 </label>
                 <input
@@ -140,6 +149,9 @@ export default function SignUpForm(){
                     onChange={(e) => handleChange("nickname", e.target.value)}
                     className={style.inputBox}
                 />
+                <div className={style.errorMessage}>
+                    {required.nickname && (<div>{required.nickname}</div>)}
+                </div>
             </label>
 
             <label className={style.inputContainer}>
@@ -167,7 +179,7 @@ export default function SignUpForm(){
                     }}
                     className={style.inputBox}
                 />
-                <div>
+                <div className={style.errorMessage}>
                     {touched.email && errors.email && (<div>{errors.email}</div>)}
                     {required.email && (<div>{required.email}</div>)}
                 </div>
@@ -195,7 +207,7 @@ export default function SignUpForm(){
                     }}
                     className={style.inputBox}
                 />
-                <div>
+                <div className={style.errorMessage}>
                     {touched.password && errors.password && (<div>{errors.password}</div>)}
                     {required.password && (<div>{required.password}</div>)}
                 </div>
@@ -223,12 +235,11 @@ export default function SignUpForm(){
                     }}
                     className={style.inputBox}
                 />
-                <div>
+                <div className={style.errorMessage}>
                     {touched.confirmPassword && errors.confirmPassword && (<div>{errors.confirmPassword}</div>)}
                     {required.confirmPassword && (<div>{required.confirmPassword}</div>)}
                 </div>
             </label>
-
             <div className={style.signInLinkContainer}>
                 <p>すでにアカウントをお持ちですか？</p>
                 {/*ここは、nextの機能で「/フォルダ名」でリンクとして使える */}
