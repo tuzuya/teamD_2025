@@ -45,13 +45,13 @@ export default function SignInForm(){
 
             if(error){
                 // 認証失敗は想定内なので warn に落とす（Next のエラートースト抑止）
-                console.warn("ログイン失敗:", error.message);
+                console.log("ログイン失敗:", error.message);
                 setAuthError(error.message);
                 return;
             }
 
             if(data.user){
-                console.log("ログイン成功:", data.user);
+                console.log("ログイン成功, purchaseページへ遷移:", data.user);
                 router.push("/purchase");
             }
         }catch(err){
@@ -80,7 +80,7 @@ export default function SignInForm(){
         if(isEmpty || isError){
             console.log("バリデーション失敗、エラー表示");
         }else{
-            console.log("バリデーション成功、purchaseページへ遷移");
+            console.log("バリデーション成功");
             await supabaseAuthentication(values.email, values.password);
         }
 
