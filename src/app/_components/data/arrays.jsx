@@ -62,19 +62,19 @@ export const options = [
             {
                 id:21, label:"春学期" , img: "/enginerring.png",
                 items:[
-                    {id:211, label:"１年"},
-                    {id:212, label:"２年"},
-                    {id:213, label:"３年"},
-                    {id:214, label:"４年"},
+                    {id:211, label:"１年", forSearch:"spring_1"},
+                    {id:212, label:"２年", forSearch:"spring_2"},
+                    {id:213, label:"３年", forSearch:"spring_3"},
+                    {id:214, label:"４年", forSearch:"spring_4"},
                 ]
             },
             {
                 id:22, label:"秋学期" , img: "/enginerring.png",
                 items:[
-                    {id:221, label:"１年"},
-                    {id:222, label:"２年"},
-                    {id:223, label:"３年"},
-                    {id:224, label:"４年"},
+                    {id:221, label:"１年", forSearch:"autumn_1"},
+                    {id:222, label:"２年", forSearch:"autumn_2"},
+                    {id:223, label:"３年", forSearch:"autumn_3"},
+                    {id:224, label:"４年", forSearch:"autumn_4"},
                 ]
             },
         ]
@@ -89,7 +89,8 @@ export const options = [
                     {id:33, label:"化学"},
                     {id:34, label:"物理"},
                     {id:35, label:"生物"},
-                    {id:36, label:"英語"}
+                    {id:36, label:"英語"},
+                    {id:37, label:"その他"}
                 ]
     }
 ];
