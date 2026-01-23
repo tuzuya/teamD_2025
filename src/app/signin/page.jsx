@@ -1,5 +1,5 @@
-import SignInForm from "../_components/SignInForm/SignInForm.jsx";
-import Header from "../_components/Header/Header.jsx";
+import SignInForm from "../components/SignInForm/SignInForm.jsx";
+import Header from "../components/Header/Header.jsx";
 
 //Headerに与える引数定義
 const pageTitle = "ロ グ イ ン";

@@ -52,3 +52,10 @@
     color: var(--white-color);
     border-radius: 17px;
 }
+
+.errorMessage{
+    color: rgba(233, 6, 6, 0.733);
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+}
