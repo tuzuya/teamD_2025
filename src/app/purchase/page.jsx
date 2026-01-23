@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context";
 
-export default function HomeMain(){
+export default function purchasePage(){
     const PageTitle ="購入する";
     const ImgSrc="/cart.png";
     const router=useRouter();
