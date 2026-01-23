@@ -11,7 +11,7 @@ export default function RadioBtns({items,name}){
             <dl>
                 {items.map((item)=>(
                     <dd key={item.id} className={styles.radioDd}>
-                        <input type="radio" id={item.id} name={name} value={item.label}/>
+                        <input type="radio" id={item.id} name={name} value={item.forSearch}/>
                         <label htmlFor={item.id} className={styles.radioLabel}>{item.label}</label>
                     </dd>
                 ))}
