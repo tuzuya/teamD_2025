@@ -8,7 +8,7 @@ export default function SellPage() {
         <div>
             <Header pageTitle={pageTitle} imgSrc={imgSrc}/>
             
-            <SellForm />
+            <SellPage />
         </div>
     );
 }
