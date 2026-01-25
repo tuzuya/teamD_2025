@@ -1,4 +1,4 @@
-import SellForm from "../components/sellForm/sellForm.jsx";
+import SellForm from "../components/SellForm/SellForm.jsx";
 import Header from "../components/Header/Header.jsx";
 
 export default function SellPage() {
@@ -8,7 +8,7 @@ export default function SellPage() {
         <div>
             <Header pageTitle={pageTitle} imgSrc={imgSrc}/>
             
-            <SellPage />
+            <SellForm />
         </div>
     );
 }

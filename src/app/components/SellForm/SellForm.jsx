@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { supabase } from "../utils/supabase/client.js";
-import styles from "./SellPage.module.css";
+import { supabase } from "../../utils/supabase.js";
+import styles from "./SellForm.module.css";
 
 const SUBJECT_MAP = {
     "数学": 1,
@@ -13,7 +13,7 @@ const SUBJECT_MAP = {
     "その他": 7,
 }
 
-const STATUS_MAP = {
+const STATE_MAP = {
     "新品未使用": 1,
     "やや傷・汚れあり": 2,
     "未使用に近い": 3,
@@ -65,7 +65,7 @@ const SEMESTER_MAP = {
     "4年秋学期": 8,
 }
 
-export default function SellPage(){
+export default function SellForm(){
     const [ bookName, setBookName] = useState("");
     const [ imageFile, setImageFile ] = useState(null);
     const [ price, setPrice] = useState("");
@@ -90,13 +90,13 @@ export default function SellPage(){
 
             //supabaseのidを使う項目については、stateで管理しているものから変換する 
             const subjectId = SUBJECT_MAP[bookSubject];
-            const statusId = STATUS_MAP[bookState];
+            const stateId = STATE_MAP[bookState];
             const deliveryMethodId = DELIVERYMETHOD_MAP[deliveryMethod];
             const courseId = COURSE_MAP[course];
             const semesterId = SEMESTER_MAP[semester];
 
             if(!subjectId) throw new Error(`科目IDが見つかりません: ${bookSubject}`);
-            if(!statusId) throw new Error(`状態IDが見つかりません: ${bookState}`);
+            if(!stateId) throw new Error(`状態IDが見つかりません: ${bookState}`);
             if(!deliveryMethodId) throw new Error(`受け渡し方法IDが見つかりません: ${deliveryMethod}`);
             if(!courseId) throw new Error(`コースIDが見つかりません: ${course}`);
             if(!semesterId) throw new Error(`学期IDが見つかりません: ${semester}`);
@@ -115,6 +115,20 @@ export default function SellPage(){
                 .from("images")
                 .getPublicUrl(fileName);
 
+            const insertData = {
+                title: bookName,
+                price: Number(price),
+                image_url: urlData.publicUrl,
+                seller_id: user.id,   // ← ここがちゃんと入っているか注目！
+                description: description,
+                subject_id: subjectId,
+                state_id: stateId,
+                delivery_method_id: deliveryMethodId,
+                course_id: courseId,
+                semester_id: semesterId
+            };
+            console.log("【送信データ確認】", insertData);
+
             const { error: insertError } = await supabase
                 .from("merchandises")
                 .insert({
@@ -125,7 +139,7 @@ export default function SellPage(){
                     description: description,
 
                     subject_id: subjectId,
-                    status_id: statusId,
+                    state_id: stateId,
                     deliveryMethod_id: deliveryMethodId,
                     course_id: courseId,
                     semester_id: semesterId
@@ -248,7 +262,7 @@ export default function SellPage(){
                         value={deliveryMethod} 
                         onChange={(e) => setDeliveryMethod(e.target.value)}
                     >
-                        {Object.keys(DELIVERY_METHOD_MAP).map((key) => (
+                        {Object.keys(DELIVERYMETHOD_MAP).map((key) => (
                             <option key={key} value={key}>{key}</option>
                         ))}
                     </select>
