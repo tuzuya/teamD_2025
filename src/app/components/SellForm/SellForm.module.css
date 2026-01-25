@@ -39,7 +39,7 @@
 .button {
   width: 100%;
   padding: 12px;
-  background-color: #0070f3;
+  background-color:var(--primary-color);
   color: white;
   border: none;
   border-radius: 4px;
@@ -56,4 +56,48 @@
 .button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+/* ...既存のCSSの下に追加... */
+
+/* ラジオボタンを並べるエリア */
+.radioGroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* 自動で列を調整 */
+  gap: 10px;
+  margin-top: 5px;
+}
+
+/* 個別の選択肢（ラベル）のデザイン */
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  background-color: #fff;
+}
+
+/* ホバー時の演出 */
+.radioLabel:hover {
+  background-color: #f5f5f5;
+}
+
+/* 選択されている時の演出（青っぽくする） */
+/* ※input:checked がある親のlabelにスタイルを当てるテクニック */
+/* .radioLabel:has(input:checked) {
+  background-color: #e6f7ff;
+  border-color: #1890ff;
+  font-weight: bold;
+  color: #0070f3;
+} */
+
+/* ラジオボタン本体（丸い部分）の微調整 */
+.radioInput {
+  cursor: pointer;
+  accent-color:var(--primary-color); /* 青色にする */
+  transform: scale(1.1); /* 少し大きく */
 }

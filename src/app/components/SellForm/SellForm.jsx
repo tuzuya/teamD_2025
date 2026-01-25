@@ -144,6 +144,29 @@ export default function SellForm(){
                     course_id: courseId,
                     semester_id: semesterId
                 })
+
+            //出品完了後の処理
+            alert("出品が完了しました！");
+
+            //入力欄の初期化
+            setBookName("");
+            setPrice("");
+            setImageFile(null); // 画像データの実体を消す
+            setDescription("");
+            
+            // 選択肢も初期値に戻す（初期値を変えている場合はそれに合わせてください）
+            setBookSubject("数学");
+            setCourse("機械工学課程基幹機械コース");
+            setSemester("1年春学期");
+            setBookState("新品未使用");
+            setDeliveryMethod("豊洲キャンパス");
+
+            // 3. 【重要】画像選択欄の見た目をクリアする
+            // file inputはstateだけでは見た目が消えないため、直接クリアします
+            const fileInput = document.getElementById("fileInput");
+            if(fileInput) {
+                fileInput.value = "";
+            }
         }
         catch(error){
             console.error(error)
@@ -157,9 +180,20 @@ export default function SellForm(){
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.title}>商品を出品する</h1>
             <form onSubmit={handleSubmit}>
-                
+                {/* 画像 */}
+                <div className={styles.formGroup}>
+                    <label className={styles.label}></label>
+                    <input
+                        id="fileInput"
+                        type="file"
+                        accept="image/*"
+                        className={styles.input}
+                        onChange={(e) => setImageFile(e.target.files[0])}
+                        required
+                    />
+                </div>
+
                 {/* 商品名 */}
                 <div className={styles.formGroup}>
                     <label className={styles.label}>商品名</label>
@@ -170,31 +204,6 @@ export default function SellForm(){
                         onChange={(e) => setBookName(e.target.value)}
                         required
                         placeholder="教科書名など"
-                    />
-                </div>
-                
-                {/* 価格 */}
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>価格 (円)</label>
-                    <input
-                        type="number"
-                        className={styles.input}
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                        required
-                        placeholder="1000"
-                    />
-                </div>
-                
-                {/* 画像 */}
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>商品画像</label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        className={styles.input}
-                        onChange={(e) => setImageFile(e.target.files[0])}
-                        required
                     />
                 </div>
                 
@@ -210,6 +219,39 @@ export default function SellForm(){
                             <option key={key} value={key}>{key}</option>
                         ))}
                     </select>
+                </div>
+
+                {/* 価格 */}
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>希望価格 (円)</label>
+                    <input
+                        type="number"
+                        className={styles.input}
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
+                        required
+                        placeholder="1000"
+                    />
+                </div>
+
+                {/* 状態 (State) */}
+                <div className={styles.formGroup}>
+                    <label className={styles.label}>状態</label>
+                    <div className={styles.radioGroup}>
+                        {Object.keys(STATE_MAP).map((key) => (
+                            <label key={key} className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="bookState" //グループ化のために必須
+                                    className={styles.radioInput}
+                                    value={key}
+                                    checked={bookState === key}
+                                    onChange={(e) => setBookState(e.target.value)}
+                                />
+                                {key}
+                            </label>
+                        ))}
+                    </div>
                 </div>
 
                 {/*コース*/}
@@ -229,43 +271,41 @@ export default function SellForm(){
                 {/*学期*/}
                 <div className={styles.formGroup}>
                     <label className={styles.label}>使用した学期</label>
-                    <select 
-                        className={styles.select}
-                        value={semester} 
-                        onChange={(e) => setSemester(e.target.value)}
-                    >
+                    <div className={styles.radioGroup}>
                         {Object.keys(SEMESTER_MAP).map((key) => (
-                            <option key={key} value={key}>{key}</option>
+                            <label key={key} className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="semester" //グループ化のために必須
+                                    className={styles.radioInput}
+                                    value={key}
+                                    checked={semester === key}
+                                    onChange={(e) => setSemester(e.target.value)}
+                                />
+                                {key}
+                            </label>
                         ))}
-                    </select>
-                </div>
-
-                {/* 状態 (State) */}
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>状態</label>
-                    <select 
-                        className={styles.select}
-                        value={bookState} 
-                        onChange={(e) => setBookState(e.target.value)}
-                    >
-                        {Object.keys(STATE_MAP).map((key) => (
-                            <option key={key} value={key}>{key}</option>
-                        ))}
-                    </select>
+                    </div>
                 </div>
                 
                 {/* 受渡方法 (Delivery) */}
                 <div className={styles.formGroup}>
                     <label className={styles.label}>受け渡し方法</label>
-                    <select 
-                        className={styles.select}
-                        value={deliveryMethod} 
-                        onChange={(e) => setDeliveryMethod(e.target.value)}
-                    >
+                    <div className={styles.radioGroup}>
                         {Object.keys(DELIVERYMETHOD_MAP).map((key) => (
-                            <option key={key} value={key}>{key}</option>
+                            <label key={key} className={styles.radioLabel}>
+                                <input
+                                    type="radio"
+                                    name="deliveryMethod" //グループ化のために必須
+                                    className={styles.radioInput}
+                                    value={key}
+                                    checked={deliveryMethod === key}
+                                    onChange={(e) => setDeliveryMethod(e.target.value)}
+                                />
+                                {key}
+                            </label>
                         ))}
-                    </select>
+                    </div>
                 </div>
                 
                 {/* 説明 (Description) */}
