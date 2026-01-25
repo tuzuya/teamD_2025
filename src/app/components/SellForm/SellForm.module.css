@@ -101,3 +101,76 @@
   accent-color:var(--primary-color); /* 青色にする */
   transform: scale(1.1); /* 少し大きく */
 }
+
+/* 画像エリア全体（横スクロール用） */
+.imageScrollContainer {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto; /* 横にはみ出たらスクロール */
+  padding-bottom: 5px; /* スクロールバーとの余白 */
+  white-space: nowrap;
+}
+
+/* プレビュー画像の枠 */
+.imagePreviewBox {
+  position: relative;
+  flex-shrink: 0; /* 縮まないように固定 */
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+/* 実際の画像 */
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 枠いっぱいにトリミング */
+}
+
+/* 削除ボタン（×マーク） */
+.removeButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* 「＋」ボタン（アップロードボタン） */
+.uploadBox {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #ccc;
+  font-size: 30px;
+  background-color: #fafafa;
+  transition: all 0.2s;
+}
+
+.uploadBox:hover {
+  background-color: #f0f0f0;
+  border-color: #0070f3;
+  color: #0070f3;
+}
+
+/* 本来のinputタグは隠す */
+.hiddenInput {
+  display: none;
+}
+

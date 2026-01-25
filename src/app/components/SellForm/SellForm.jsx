@@ -67,7 +67,8 @@ const SEMESTER_MAP = {
 
 export default function SellForm(){
     const [ bookName, setBookName] = useState("");
-    const [ imageFile, setImageFile ] = useState(null);
+    // const [ imageFile, setImageFile ] = useState(null);
+    const [ images, setImages ] = useState([]);
     const [ price, setPrice] = useState("");
     const [ bookSubject, setBookSubject ] = useState("数学");
     const [ bookState, setBookState ] = useState("新品未使用");
@@ -78,6 +79,30 @@ export default function SellForm(){
 
     const [ loading, setLoading ] = useState(false);
 
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        if(files.length === 0) return;
+
+        if(images.length + files.length > 5){
+            alert("画像は最大5枚までです");
+            return;
+        }
+
+        //プレビュー用URLを作ってStateに追加
+        const newImages = files.map((file) => ({
+            file: file,
+            previewUrl: URL.createObjectURL(file)
+        }));
+        setImages((prev) => [...prev, ...newImages]);
+
+        //同じファイルを再選択できるようにinputの値をクリア
+        e.target.value = null;
+    };
+
+    const removeImage = (indexToRemove) => {
+        setImages((prev) => prev.filter((_, index) => index !== indexToRemove));
+    }
+
     const handleSubmit = async(e) => {
         e.preventDefault();
         setLoading(true);
@@ -86,7 +111,7 @@ export default function SellForm(){
             //ログインチェック＆画像チェック
             const { data: { user } } = await supabase.auth.getUser();
             if(!user) throw new Error("ログインしていません");
-            if(!imageFile) throw new Error("画像が選択されていません");
+            if(images.length === 0) throw new Error("画像が選択されていません");
 
             //supabaseのidを使う項目については、stateで管理しているものから変換する 
             const subjectId = SUBJECT_MAP[bookSubject];
@@ -101,19 +126,25 @@ export default function SellForm(){
             if(!courseId) throw new Error(`コースIDが見つかりません: ${course}`);
             if(!semesterId) throw new Error(`学期IDが見つかりません: ${semester}`);
 
-            const fileExt = imageFile.name.split('.').pop();
-            const fileName = `${Math.random().toString(32).substring(2)}.${fileExt}`;
+            const uploadPromises = images.map(async(img) => {
+                const fileExt = img.file.name.split(".").pop();
+                const fileName = `${Math.random().toString(32).substring(2)}.${fileExt}`;
 
-            const { error: uploadError } = await supabase
-                .storage
-                .from("images")
-                .upload(fileName, imageFile);
-            if(uploadError) throw uploadError;
+                //画像アップロード
+                const { error: uploadError } = await supabase
+                    .storage
+                    .from("images")
+                    .upload(fileName, img.file);
+                if(uploadError) throw uploadError;
 
-            const { data: urlData } = supabase
-                .storage
-                .from("images")
-                .getPublicUrl(fileName);
+                //URL取得
+                const { data: urlData } = supabase
+                    .storage
+                    .from("images")
+                    .getPublicUrl(fileName);
+
+                return urlData.publicUrl;
+            })
 
             const insertData = {
                 title: bookName,
@@ -133,7 +164,7 @@ export default function SellForm(){
                 .from("merchandises")
                 .insert({
                     name: bookName,
-                    image_url: urlData.publicUrl,
+                    image_url: uploadUrls[0], //とりあえず最初の画像だけ登録
                     seller_id: user.id,
                     price: Number(price),
                     description: description,
@@ -151,7 +182,7 @@ export default function SellForm(){
             //入力欄の初期化
             setBookName("");
             setPrice("");
-            setImageFile(null); // 画像データの実体を消す
+            setImages([]); // 画像データの実体を消す
             setDescription("");
             
             // 選択肢も初期値に戻す（初期値を変えている場合はそれに合わせてください）
@@ -184,14 +215,34 @@ export default function SellForm(){
                 {/* 画像 */}
                 <div className={styles.formGroup}>
                     <label className={styles.label}></label>
-                    <input
-                        id="fileInput"
-                        type="file"
-                        accept="image/*"
-                        className={styles.input}
-                        onChange={(e) => setImageFile(e.target.files[0])}
-                        required
-                    />
+                    <div className={styles.imageScrollContainer}>
+                        {/*選択済みの画像プレビューを表示 */}
+                        {images.map((img, index) => (
+                            <div key={index} className={styles.imagePreviewBox}>
+                                <button
+                                    type="button"
+                                    className={styles.removeButton}
+                                    onClick={() => removeImage(index)}
+                                >
+                                    ✖
+                                </button>
+                            </div>
+                        ))}
+
+                        {/*「＋」ボタン（５枚未満の時だけ表示） */}
+                        {images.length < 5 && (
+                            <label className={styles.uploadBox}>
+                                <span>+</span>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    multiple //複数選択を許可
+                                    className={styles.hiddenInput}
+                                    onChange={handleImageChange}
+                                />
+                            </label>
+                        )}
+                    </div>
                 </div>
 
                 {/* 商品名 */}
