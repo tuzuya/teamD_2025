@@ -152,6 +152,8 @@ export default function SellForm(){
                 return urlData.publicUrl;
             })
 
+            const uploadUrls = await Promise.all(uploadPromises);
+            
             const insertData = {
                 title: bookName,
                 price: Number(price),
