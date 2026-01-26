@@ -89,14 +89,20 @@ export default function SellForm(){
         }
 
         //プレビュー用URLを作ってStateに追加
-        const newImages = files.map((file) => ({
-            file: file,
-            previewUrl: URL.createObjectURL(file)
-        }));
+        const newImages = files.map((file) => {
+            const url = URL.createObjectURL(file);
+            console.log("生成されたURL:", url);
+            return {
+                file: file,
+                previewUrl: url
+            };
+        });
         setImages((prev) => [...prev, ...newImages]);
 
         //同じファイルを再選択できるようにinputの値をクリア
         e.target.value = null;
+
+        console.log("現在の画像リスト:", images);
     };
 
     const removeImage = (indexToRemove) => {
@@ -149,7 +155,7 @@ export default function SellForm(){
             const insertData = {
                 title: bookName,
                 price: Number(price),
-                image_url: urlData.publicUrl,
+                image_url: uploadUrls,
                 seller_id: user.id,   // ← ここがちゃんと入っているか注目！
                 description: description,
                 subject_id: subjectId,
@@ -164,7 +170,7 @@ export default function SellForm(){
                 .from("merchandises")
                 .insert({
                     name: bookName,
-                    image_url: uploadUrls[0], //とりあえず最初の画像だけ登録
+                    image_url: uploadUrls,
                     seller_id: user.id,
                     price: Number(price),
                     description: description,
@@ -219,6 +225,11 @@ export default function SellForm(){
                         {/*選択済みの画像プレビューを表示 */}
                         {images.map((img, index) => (
                             <div key={index} className={styles.imagePreviewBox}>
+                                <img 
+                                    src={img.previewUrl} 
+                                    alt="preview" 
+                                    className={styles.previewImage} 
+                                />
                                 <button
                                     type="button"
                                     className={styles.removeButton}
