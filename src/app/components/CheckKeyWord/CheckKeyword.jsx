@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import preWord from "../preword";
-import styles from "./Checkkeyword.module.css";
+import styles from "./CheckKeyword.module.css";
 
 export default function CheckKeyword(){
     const [searchWord, setSearchWord] = useState("");
@@ -17,7 +17,6 @@ export default function CheckKeyword(){
                         name="key-word"
                     />
                 </div>
-             
         </>
     );
 }
