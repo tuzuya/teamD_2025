@@ -12,7 +12,7 @@ import Link from "next/link";
 // ★修正1：createClient関数をインポート（パスは実際のファイル構成に合わせてください）
 // もし utils/supabase/client.js なら "../../../utils/supabase/client" かもしれません。
 // エラーが出る場合はパスを確認してください。
-import { createClient } from "../../utils/supabase/client";
+import { createClient } from "@/utils/supabase/client";
 
 export default function SignUpForm(){
     // ★修正2：コンポーネントの中で実行して supabase インスタンスを作る
