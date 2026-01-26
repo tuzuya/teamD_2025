@@ -10,7 +10,6 @@ import { createClient } from "@/utils/supabase/client";
 import styles from "./page.module.css";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { routerServerGlobal } from "next/dist/server/lib/router-utils/router-server-context";
 
 export default function PurchasePage(){
     const PageTitle ="購入する";
