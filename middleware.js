@@ -10,11 +10,12 @@ export async function middleware(request) {
   
   const isAuthenticated = !!user; // userが存在すれば認証済み
 
-  // --- A. ルートパスの制御 ( / → /purchase ) ---
+  // --- A. ルートパスの制御 ---
   
-  // アプリケーションのルート (/) にアクセスされたら、/purchase へリダイレクト
+  // アプリケーションのルート (/) にアクセスされた場合
   if (request.nextUrl.pathname === '/') {
-    const url = new URL(PROTECTED_PATH, request.url);
+    // 未認証なら /signin へ、認証済みなら /purchase へリダイレクト
+    const url = new URL(isAuthenticated ? PROTECTED_PATH : LOGIN_PATH, request.url);
     return NextResponse.redirect(url);
   }
 
