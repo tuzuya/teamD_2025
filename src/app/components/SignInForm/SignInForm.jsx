@@ -44,6 +44,7 @@ export default function SignInForm(){
 
         try{
             // ここで上で作った supabase インスタンスを使う
+            //detaオブジェクトには、data.user や data.session が含まれる
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
