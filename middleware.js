@@ -1,3 +1,4 @@
+//NextResponseはリダイレクト用のreturnに使う。Cookieの更新はsupabaseResponseが担当するので注意
 import { NextResponse } from 'next/server';
 import { updateSession } from '@/utils/supabase/middleware';
 
@@ -6,13 +7,18 @@ const LOGIN_PATH = '/signin';
 
 export async function middleware(request) {
   // Supabaseのセッション情報を取得
+  //このrequestの中には、URLやクッキー情報が含まれている
   const { supabaseResponse, user } = await updateSession(request);
+  //なぜgetUserではなくupdateSessionを使うかというと、getUserは単にユーザー情報を取得するだけだが、
+  // updateSessionはクッキーの自動更新も行うため、セッション管理に必要だから
   
   const isAuthenticated = !!user; // userが存在すれば認証済み
+  //userが認証済みというのは、一つ前のrequestの中にCookieが含まれていて、かつそのCookieがsupabase側で有効と判断された場合
 
   // --- A. ルートパスの制御 ---
   
   // アプリケーションのルート (/) にアクセスされた場合
+  //request.urlは完全なフルurl, request.nextUrl.pathnameは「/」のようなパス部分のみ
   if (request.nextUrl.pathname === '/') {
     // 未認証なら /signin へ、認証済みなら /purchase へリダイレクト
     const url = new URL(isAuthenticated ? PROTECTED_PATH : LOGIN_PATH, request.url);
@@ -39,6 +45,8 @@ export async function middleware(request) {
   }
 
   // 認証済み、かつアクセスが許可されている場合、Supabaseのレスポンスを返す
+  //ミドルウェアの最後は、リダイレクトしないなら更新済みのsupabaseResponseを返すようにするのが一般的
+  //このreturnが出るのは、認証済みでpurchase配下にアクセスするときと、未認証でsigninにアクセスするとき
   return supabaseResponse;
 }
 
@@ -50,3 +58,4 @@ export const config = {
     '/signin', // signin ページも監視対象に加える
   ],
 };
+
