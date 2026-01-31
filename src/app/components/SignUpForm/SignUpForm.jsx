@@ -9,9 +9,7 @@ import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
 import style from "./SignUpForm.module.css";
 import Link from "next/link";
 
-// ★修正1：createClient関数をインポート（パスは実際のファイル構成に合わせてください）
-// もし utils/supabase/client.js なら "../../../utils/supabase/client" かもしれません。
-// エラーが出る場合はパスを確認してください。
+// ★修正1：createClient関数をインポート
 import { createClient } from "@/utils/supabase/client";
 
 export default function SignUpForm(){
@@ -48,6 +46,8 @@ export default function SignUpForm(){
     // Supabase Auth への登録用関数
     const supabaseRegistration = async(email, password, nickname) => {
         // ここで上で作った supabase インスタンスを使います
+        //変数の宣言時に、data: authDataなどと書くことで名前を変更して書くことができる。
+        //supabaseは基本的に全て「data, error」でしかデータをやり取りしないので、基本的にdata,errorで受け取り、必要に応じて名前を変更するべき
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
             password: password,
@@ -108,7 +108,6 @@ export default function SignUpForm(){
             console.log("バリデーション失敗、エラー表示");
         }else{
             // ★修正3：バリデーション成功時のみ実行する
-            // mockSignUpは削除し、本番の登録処理を実行
             const isSuccess = await supabaseRegistration(values.email, values.password, values.nickname);
             
             if(isSuccess) {
