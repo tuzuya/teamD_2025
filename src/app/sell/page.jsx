@@ -1,5 +1,5 @@
-import SellForm from "../_components/sellForm/sellForm.jsx";
-import Header from "../_components/Header/Header.jsx";
+import SellForm from "../components/sellForm/sellForm.jsx";
+import Header from "../components/Header/Header.jsx";
 
 export default function SellPage() {
     const pageTitle = "出品ページ";

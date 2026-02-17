@@ -7,6 +7,8 @@ import validatePassword from "../../_validationFunctions/validatePassword.jsx";
 import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
 import style from "./SignInForm.module.css";
 import Link from "next/link";
+import { supabase } from "../../utils/supabase.js";
+
 
 export default function SignInForm(){
     const [values, setValues] = useState({
@@ -26,18 +28,36 @@ export default function SignInForm(){
         email:null,
         password:null,
     });
+    const [authError, setAuthError] = useState(null);
     
     const isLoading = false; //Todo: ローディング状態の管理
 
     const router  = useRouter();
 
-    const mockSignUp = () => {
-        return new Promise((resolve) => {
-            setTimeout(()=> {
-                console.log("Supabaseとの通信時間として2秒待機");
-                resolve();
-            }, 2000)
-        })
+    const supabaseAuthentication = async(email, password) => {
+        setAuthError(null); // 前回のエラーをクリア
+        try{
+            //supabaseにメールとパスワードを送って照合する
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password,
+            })
+
+            if(error){
+                // 認証失敗は想定内なので warn に落とす（Next のエラートースト抑止）
+                console.log("ログイン失敗:", error.message);
+                setAuthError(error.message);
+                return;
+            }
+
+            if(data.user){
+                console.log("ログイン成功, purchaseページへ遷移:", data.user);
+                router.push("/purchase");
+            }
+        }catch(err){
+            console.error("予期しないエラー:", err);
+            setAuthError("予期しないエラーが発生しました。時間をおいて再度お試しください。");
+        }
     }
 
     const handleSubmit = async(e) => {
@@ -60,10 +80,8 @@ export default function SignInForm(){
         if(isEmpty || isError){
             console.log("バリデーション失敗、エラー表示");
         }else{
-            await mockSignUp();
-            console.log("バリデーション成功、purchaseページへ遷移");
-            //Todo: Supabase認証後に画面が遷移するようにする
-            router.push("/purchase");
+            console.log("バリデーション成功");
+            await supabaseAuthentication(values.email, values.password);
         }
 
         console.log("入力されたデータ:", values);
@@ -138,6 +156,9 @@ export default function SignInForm(){
                         <p>初めてのご利用ですか？</p>
                         <Link href="/signup" className={style.signUpLink}>会員登録はこちらから</Link>
                     </div>
+                    {authError && (
+                        <div className={style.errorMessage}>{authError}</div>
+                    )}
                 </div>
                 
 
