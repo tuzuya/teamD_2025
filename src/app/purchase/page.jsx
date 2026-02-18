@@ -1,5 +1,5 @@
 "use client";
-import CheckKeyword from "../components/CheckKeyWord/Checkkeyword";
+import CheckKeyword from "../components/CheckKeyWord/CheckKeyword";
 import { options } from "../components/data/arrays";
 import Header from "../components/Header/Header";
 import RadioBtns from "../components/radioBtns/radioBtns";
@@ -18,7 +18,7 @@ import styles from "./page.module.css";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function purchasePage(){
+export default function PurchasePage(){
     const PageTitle ="購入する";
     const ImgSrc="/cart.png";
     const router=useRouter();

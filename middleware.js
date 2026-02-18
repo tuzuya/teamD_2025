@@ -1,18 +1,22 @@
 import { NextResponse } from 'next/server';
+import { updateSession } from '@/utils/supabase/middleware';
 
 const PROTECTED_PATH = '/purchase';
 const LOGIN_PATH = '/signin';
 
-export function middleware(request) {
-  // 1. 認証情報の確認 (例: Cookieからトークンを取得)
-  // 💡 ログインの有効時間内であれば、Cookieにトークンが存在すると仮定
-  const isAuthenticated = request.cookies.has('session_token'); 
-
-  // --- A. ルートパスの制御 ( / → /purchase ) ---
+export async function middleware(request) {
+  // Supabaseのセッション情報を取得
+  const { supabaseResponse, user } = await updateSession(request);
   
-  // アプリケーションのルート (/) にアクセスされたら、/purchase へリダイレクト
+  const isAuthenticated = !!user; // userが存在すれば認証済み
+
+  // --- A. ルートパスの制御 ---
+  
+  // アプリケーションのルート (/) にアクセスされた場合
   if (request.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL(PROTECTED_PATH, request.url));
+    // 未認証なら /signin へ、認証済みなら /purchase へリダイレクト
+    const url = new URL(isAuthenticated ? PROTECTED_PATH : LOGIN_PATH, request.url);
+    return NextResponse.redirect(url);
   }
 
   // --- B. 認証ガードのロジック ( /purchase へのアクセス制御 ) ---
@@ -23,17 +27,19 @@ export function middleware(request) {
     if (request.nextUrl.pathname.startsWith(PROTECTED_PATH)) {
       
       // サインインページへのリダイレクトを強制
-      return NextResponse.redirect(new URL(LOGIN_PATH, request.url));
+      const url = new URL(LOGIN_PATH, request.url);
+      return NextResponse.redirect(url);
     }
   }
 
   // 認証済みの場合、サインインページにアクセスしようとしたら /purchase へリダイレクト
   if (isAuthenticated && request.nextUrl.pathname === LOGIN_PATH) {
-    return NextResponse.redirect(new URL(PROTECTED_PATH, request.url));
+    const url = new URL(PROTECTED_PATH, request.url);
+    return NextResponse.redirect(url);
   }
 
-  // 認証済み、かつアクセスが許可されている場合、そのまま続行
-  return NextResponse.next();
+  // 認証済み、かつアクセスが許可されている場合、Supabaseのレスポンスを返す
+  return supabaseResponse;
 }
 
 // ミドルウェアを実行するパスを指定 (ルートとpurchase配下を監視)

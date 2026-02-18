@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Header from "../Header/Header.jsx";
 import validateEmail from "../../_validationFunctions/validateEmail.jsx";
@@ -7,10 +7,13 @@ import validatePassword from "../../_validationFunctions/validatePassword.jsx";
 import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
 import style from "./SignInForm.module.css";
 import Link from "next/link";
-import { supabase } from "../../utils/supabase.js";
-
+// ★修正1: createClient関数をインポート（@を使って絶対パス指定）
+import { createClient } from "@/utils/supabase/client";
 
 export default function SignInForm(){
+    // ★修正2: コンポーネント内で実行して supabase インスタンスを作る
+    const supabase = createClient();
+
     const [values, setValues] = useState({
         email:"",
         password:"",
@@ -19,7 +22,7 @@ export default function SignInForm(){
         email:null,
         password:null,
     });
-    //touchedは、ユーザーが触った項目にのみエラー表示を発火させるためのboolean値
+    
     const [touched, setTouched] = useState({
         email:false,
         password:false,
@@ -30,38 +33,52 @@ export default function SignInForm(){
     });
     const [authError, setAuthError] = useState(null);
     
-    const isLoading = false; //Todo: ローディング状態の管理
+    // ★修正3: loadingをただの変数から state に変更（ボタン連打防止用）
+    const [isLoading, setIsLoading] = useState(false); 
 
     const router  = useRouter();
 
     const supabaseAuthentication = async(email, password) => {
-        setAuthError(null); // 前回のエラーをクリア
+        setAuthError(null);
+        setIsLoading(true); // ロード開始
+
         try{
-            //supabaseにメールとパスワードを送って照合する
+            // ここで上で作った supabase インスタンスを使う
+            //detaオブジェクトには、data.user や data.session が含まれる
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password,
             })
 
             if(error){
-                // 認証失敗は想定内なので warn に落とす（Next のエラートースト抑止）
                 console.log("ログイン失敗:", error.message);
-                setAuthError(error.message);
+                // エラーメッセージを日本語化（必要であれば）
+                if (error.message === "Invalid login credentials") {
+                    setAuthError("メールアドレスまたはパスワードが間違っています。");
+                } else {
+                    setAuthError(error.message);
+                }
+                setIsLoading(false); // エラーならロード解除
                 return;
             }
 
             if(data.user){
                 console.log("ログイン成功, purchaseページへ遷移:", data.user);
                 router.push("/purchase");
+                // 成功時は画面遷移するので setIsLoading(false) はしなくてOK
             }
         }catch(err){
             console.error("予期しないエラー:", err);
-            setAuthError("予期しないエラーが発生しました。時間をおいて再度お試しください。");
+            setAuthError("予期しないエラーが発生しました。");
+            setIsLoading(false);
         }
     }
 
     const handleSubmit = async(e) => {
         e.preventDefault();
+
+        // 既に処理中なら何もしない（連打防止）
+        if(isLoading) return;
 
         const emptyRequiredValues = {
             email: validateRequired(values.email),
@@ -85,8 +102,6 @@ export default function SignInForm(){
         }
 
         console.log("入力されたデータ:", values);
-        console.log("required:", emptyRequiredValues);
-        console.log("errors:", submitErrors);
     }
 
     const handleChange = (fieldName, newValue) => {
@@ -96,7 +111,7 @@ export default function SignInForm(){
         }))
         setErrors((prev) => ({
             ...prev,
-            [fieldName]:null//データが変更されたタイミングでの、エラーのクリア
+            [fieldName]:null
         }))
     }
     
@@ -157,13 +172,18 @@ export default function SignInForm(){
                         <Link href="/signup" className={style.signUpLink}>会員登録はこちらから</Link>
                     </div>
                     {authError && (
-                        <div className={style.errorMessage}>{authError}</div>
+                        <div className={style.errorMessage} style={{color: "red", marginTop: "10px"}}>
+                            {authError}
+                        </div>
                     )}
                 </div>
                 
 
                 <footer className={style.formFooter}> 
-                    <button type="submit" className={style.setButton}>ロ&nbsp;グ&nbsp;イ&nbsp;ン</button>
+                    {/* isLoading中はボタンを押せなくして、表示を変える */}
+                    <button type="submit" className={style.setButton} disabled={isLoading}>
+                        {isLoading ? "処理中..." : "ロ グ イ ン"}
+                    </button>
                 </footer>
             </form>
         </>

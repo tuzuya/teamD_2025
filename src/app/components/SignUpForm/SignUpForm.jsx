@@ -8,9 +8,16 @@ import validateConfirmPassword from "../../_validationFunctions/validateConfirmP
 import validateRequired from "@/app/_validationFunctions/validateRequired.jsx";
 import style from "./SignUpForm.module.css";
 import Link from "next/link";
-import { supabase } from "../../utils/supabase.js";
+
+// ★修正1：createClient関数をインポート（パスは実際のファイル構成に合わせてください）
+// もし utils/supabase/client.js なら "../../../utils/supabase/client" かもしれません。
+// エラーが出る場合はパスを確認してください。
+import { createClient } from "@/utils/supabase/client";
 
 export default function SignUpForm(){
+    // ★修正2：コンポーネントの中で実行して supabase インスタンスを作る
+    const supabase = createClient();
+
     const [values, setValues] = useState({
         nickname:"",
         email:"",
@@ -23,7 +30,6 @@ export default function SignUpForm(){
         password:null,
         confirmPassword:null,
     });
-    //touchedは、ユーザーが触った項目にのみエラー表示を発火させるためのboolean値
     const [touched, setTouched] = useState({
         nickname:false,
         email:false,
@@ -39,44 +45,40 @@ export default function SignUpForm(){
 
     const router = useRouter();
 
-    //Todo: mock用関数を利用して、データサーバとの通信時の非同期処理の仮型の作成
-    const mockSignUp = () => {
-        return new Promise((resolve) => {
-            setTimeout(()=> {
-                console.log("Supabaseとの通信時間として2秒待機");
-                resolve();
-            }, 2000)
-        })
-    }
-
-    //Supabase Auth への登録用関数
+    // Supabase Auth への登録用関数
     const supabaseRegistration = async(email, password, nickname) => {
+        // ここで上で作った supabase インスタンスを使います
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email: email,
             password: password,
+            // ユーザーメタデータとしてニックネームを保存することも可能
+            options: {
+                data: {
+                    user_name: nickname,
+                }
+            }
         })
 
-        //エラーならここでストップ
         if(authError){
             console.error("supabase authの認証エラー:", authError.message);
-            alert("会員登録に失敗しました:", authError.message)
-            return
+            alert("会員登録に失敗しました: " + authError.message)
+            return false; // 失敗したことを返す
         }
 
-        //成功したら、続けてProfilesテーブルにデータを作成
         if(authData.user){
             const{ error: profileError } = await supabase
                 .from("profiles")
                 .insert({
                     id: authData.user.id,
                     user_name: nickname,
-                    //Todo: 学部や学年などは後でここに追加
                 })
 
             if(profileError){
                 console.error("プロフィール作成エラー:", profileError.message)
+                return false;
             }else{
                 console.log("登録完了！")
+                return true; // 成功したことを返す
             }
         }
     }
@@ -84,14 +86,12 @@ export default function SignUpForm(){
     const handleSubmit = async(e) => {
         e.preventDefault();
 
-        //会員登録録ボタンが押されたときに、handleSubmitですべての項目を一括バリデーション
         const emptyRequiredValues ={
             nickname: validateRequired(values.nickname),
             email: validateRequired(values.email),
             password: validateRequired(values.password),
             confirmPassword: validateRequired(values.confirmPassword),
         }
-        //必須項目のうち１つでも入力してないと、テキストが返ってくるので、trueになる
         const isEmpty = Object.values(emptyRequiredValues).some(Boolean);
         setRequired(emptyRequiredValues);
 
@@ -105,22 +105,21 @@ export default function SignUpForm(){
         setErrors(submitErrors);
 
         if(isEmpty || isError){
-            console.log("バリエーション失敗、エラー表示");
+            console.log("バリデーション失敗、エラー表示");
         }else{
-            await mockSignUp();
-            console.log("バリエーション成功、purchaseページへ遷移");
-            //Todo:　Supabase認証後に画面が遷移するようにする
-            router.push("/purchase");
+            // ★修正3：バリデーション成功時のみ実行する
+            // mockSignUpは削除し、本番の登録処理を実行
+            const isSuccess = await supabaseRegistration(values.email, values.password, values.nickname);
+            
+            if(isSuccess) {
+                console.log("Supabase登録成功、ページ遷移");
+                router.push("/purchase");
+            }
         }
-
-        //ここでぜe.target.valueとしないのか？
-        //A. onSubmitの時は、e.targetは<form>タグを指すので、valueがないから。
-        //e.target.valueはonChangeの時に使う
-        supabaseRegistration(values.email, values.password, values.nickname);
+        // ★注意：以前ここにあった supabaseRegistration(...) は削除しました
+        // ここにあると、エラーがあっても実行されてしまっていました。
         
         console.log("入力されたデータ:", values);
-        console.log("required:", emptyRequiredValues);
-        console.log("errors:", submitErrors);
     }
 
     const handleChange = (fieldName, newValue) => {
@@ -130,126 +129,124 @@ export default function SignUpForm(){
         }))
         setErrors((prev) => ({
             ...prev,
-            [fieldName]:null//データが変更されたタイミングでの、エラーのクリア
+            [fieldName]:null
         }))
     }
 
     return(
         <form onSubmit={handleSubmit} className={style.formContainer}>
-            <label className={style.inputContainer}>
-                <label className={style.inputLabel}>
-                    <span className={style.labelText}>ニックネーム</span>
-                    <span className={style.requiredBadge}>必須</span>
-                    <span className={style.supplement}>※&nbsp;ニックネームを設定しなかった場合イニシャルがプロフィールに表示</span>
-                </label>
-                <input
-                    type="text"
-                    placeholder="例) shiba"
-                    value={values.nickname}
-                    onChange={(e) => handleChange("nickname", e.target.value)}
-                    className={style.inputBox}
-                />
-                <div className={style.errorMessage}>
-                    {required.nickname && (<div>{required.nickname}</div>)}
-                </div>
-            </label>
+           {/* 中身は変更なしのため省略、元のまま記述してください */}
+           {/* ...入力フォームのJSX... */}
+           <label className={style.inputContainer}>
+               <label className={style.inputLabel}>
+                   <span className={style.labelText}>ニックネーム</span>
+                   <span className={style.requiredBadge}>必須</span>
+                   <span className={style.supplement}>※&nbsp;ニックネームを設定しなかった場合イニシャルがプロフィールに表示</span>
+               </label>
+               <input
+                   type="text"
+                   placeholder="例) shiba"
+                   value={values.nickname}
+                   onChange={(e) => handleChange("nickname", e.target.value)}
+                   className={style.inputBox}
+               />
+               <div className={style.errorMessage}>
+                   {required.nickname && (<div>{required.nickname}</div>)}
+               </div>
+           </label>
 
-            <label className={style.inputContainer}>
-                <label className={style.inputLabel}>
-                    <span className={style.labelText}>G-mail</span>
-                    <span className={style.requiredBadge}>必須</span>
-                    <span className={style.supplement}>※&nbsp;大学のメールアドレスを入力</span>
-                </label>
-                <input
-                    type="email"
-                    placeholder="例) AX00000@shibaura-it.ac.jp"
-                    value={values.email}
-                    //入力されるたびにstate更新＋errorのクリア
-                    //→入力が終わったタイミングでバリデーション実行して、最終的なerrorをstateにセットする
-                    onChange={(e) => handleChange("email", e.target.value)}
-                    onBlur={(e) => {
-                        setErrors((prev) => ({
-                            ...prev,
-                            email: validateEmail(e.target.value)
-                        }));
-                        setTouched((prev) => ({
-                            ...prev,
-                            email: true
-                        }));
-                    }}
-                    className={style.inputBox}
-                />
-                <div className={style.errorMessage}>
-                    {touched.email && errors.email && (<div>{errors.email}</div>)}
-                    {required.email && (<div>{required.email}</div>)}
-                </div>
-            </label>
+           <label className={style.inputContainer}>
+               <label className={style.inputLabel}>
+                   <span className={style.labelText}>G-mail</span>
+                   <span className={style.requiredBadge}>必須</span>
+                   <span className={style.supplement}>※&nbsp;大学のメールアドレスを入力</span>
+               </label>
+               <input
+                   type="email"
+                   placeholder="例) AX00000@shibaura-it.ac.jp"
+                   value={values.email}
+                   onChange={(e) => handleChange("email", e.target.value)}
+                   onBlur={(e) => {
+                       setErrors((prev) => ({
+                           ...prev,
+                           email: validateEmail(e.target.value)
+                       }));
+                       setTouched((prev) => ({
+                           ...prev,
+                           email: true
+                       }));
+                   }}
+                   className={style.inputBox}
+               />
+               <div className={style.errorMessage}>
+                   {touched.email && errors.email && (<div>{errors.email}</div>)}
+                   {required.email && (<div>{required.email}</div>)}
+               </div>
+           </label>
 
-            <label className={style.inputContainer}>
-                <label className={style.inputLabel}>
-                    パスワード
-                    <span className={style.requiredBadge}>必須</span>
-                </label>
-                <input
-                    type="password"
-                    placeholder="8文字以上"
-                    value={values.password}
-                    onChange={(e) => handleChange("password", e.target.value)}
-                    onBlur={(e) => {
-                        setErrors((prev) => ({
-                            ...prev,
-                            password: validatePassword(e.target.value)
-                        }));
-                        setTouched((prev) => ({
-                            ...prev,
-                            password: true
-                        }));
-                    }}
-                    className={style.inputBox}
-                />
-                <div className={style.errorMessage}>
-                    {touched.password && errors.password && (<div>{errors.password}</div>)}
-                    {required.password && (<div>{required.password}</div>)}
-                </div>
-            </label>
-            
-            <label className={style.inputContainer}>
-                <label className={style.inputLabel}>
-                    パスワード(確認用)
-                <span className={style.requiredBadge}>必須</span>
-                </label>
-                <input
-                    type="password"
-                    placeholder="もう一度パスワードを入力して下さい"
-                    value={values.confirmPassword}
-                    onChange={(e) => handleChange("confirmPassword", e.target.value)}
-                    onBlur={(e) => {
-                        setErrors((prev) => ({
-                            ...prev,
-                            confirmPassword: validateConfirmPassword(values.password, e.target.value)
-                        }));
-                        setTouched((prev) => ({
-                            ...prev,
-                            confirmPassword: true
-                        }));
-                    }}
-                    className={style.inputBox}
-                />
-                <div className={style.errorMessage}>
-                    {touched.confirmPassword && errors.confirmPassword && (<div>{errors.confirmPassword}</div>)}
-                    {required.confirmPassword && (<div>{required.confirmPassword}</div>)}
-                </div>
-            </label>
-            <div className={style.signInLinkContainer}>
-                <p>すでにアカウントをお持ちですか？</p>
-                {/*ここは、nextの機能で「/フォルダ名」でリンクとして使える */}
-                <Link href="/signin" className={style.signInLink}>サインインはこちら</Link>
-            </div>
+           <label className={style.inputContainer}>
+               <label className={style.inputLabel}>
+                   パスワード
+                   <span className={style.requiredBadge}>必須</span>
+               </label>
+               <input
+                   type="password"
+                   placeholder="8文字以上"
+                   value={values.password}
+                   onChange={(e) => handleChange("password", e.target.value)}
+                   onBlur={(e) => {
+                       setErrors((prev) => ({
+                           ...prev,
+                           password: validatePassword(e.target.value)
+                       }));
+                       setTouched((prev) => ({
+                           ...prev,
+                           password: true
+                       }));
+                   }}
+                   className={style.inputBox}
+               />
+               <div className={style.errorMessage}>
+                   {touched.password && errors.password && (<div>{errors.password}</div>)}
+                   {required.password && (<div>{required.password}</div>)}
+               </div>
+           </label>
+           
+           <label className={style.inputContainer}>
+               <label className={style.inputLabel}>
+                   パスワード(確認用)
+               <span className={style.requiredBadge}>必須</span>
+               </label>
+               <input
+                   type="password"
+                   placeholder="もう一度パスワードを入力して下さい"
+                   value={values.confirmPassword}
+                   onChange={(e) => handleChange("confirmPassword", e.target.value)}
+                   onBlur={(e) => {
+                       setErrors((prev) => ({
+                           ...prev,
+                           confirmPassword: validateConfirmPassword(values.password, e.target.value)
+                       }));
+                       setTouched((prev) => ({
+                           ...prev,
+                           confirmPassword: true
+                       }));
+                   }}
+                   className={style.inputBox}
+               />
+               <div className={style.errorMessage}>
+                   {touched.confirmPassword && errors.confirmPassword && (<div>{errors.confirmPassword}</div>)}
+                   {required.confirmPassword && (<div>{required.confirmPassword}</div>)}
+               </div>
+           </label>
+           <div className={style.signInLinkContainer}>
+               <p>すでにアカウントをお持ちですか？</p>
+               <Link href="/signin" className={style.signInLink}>サインインはこちら</Link>
+           </div>
 
-            <footer className={style.formFooter}>
-                <button type="submit" className={style.setButton}>会&nbsp;員&nbsp;登&nbsp;録</button>
-            </footer>
+           <footer className={style.formFooter}>
+               <button type="submit" className={style.setButton}>会&nbsp;員&nbsp;登&nbsp;録</button>
+           </footer>
         </form>
-            
     )
 }
