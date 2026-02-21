@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useParams } from "next/navigation"; 
-import Header from "@/app/_components/Header/Header";
+import Header from "@/app/components/Header/Header";
 import styles from "./page.module.css";
 
 export default function MerchandiseDetail() {
