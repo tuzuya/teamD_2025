@@ -95,4 +95,52 @@ export const options = [
     }
 ];
 
+export const getName=[
+    {id:1,label:"機械工学課程基幹機械コース",},
+    {id:2,label:"機械工学課程先進機械コース",},
+    {id:3,label:"物質化学課程環境・物質コース",},
+    {id:4,label:"物質化学課程化学・生命工学コース",},
+    {id:5,label:"電気電子工学課程電気・ロボット工学コース",},
+    {id:6,label:"電気電子工学課程先端電子工学コース",},
+    {id:7,label:"情報・通信工学課程情報通信コース",},
+    {id:8,label:"情報・通信工学課程情報工学コース",},
+    {id:9,label:"土木工学課程都市・環境コース",},
+    {id:10,label:"先進国際課程",},
+    {id:11,label:"電気情報システム学科"},
+    {id:12,label:"機械制御システム学科"},
+    {id:13,label:"環境システム学科"},
+    {id:14,label:"生命科学科ー生命科学コース"},
+    {id:15,label:"生命科学科ー生命医工学コース"},
+    {id:16,label:"数理科学科"},
+    {id:17,label:"社会情報システムコース"},
+    {id:18,label:"UXコース"},
+    {id:19,label:"プロダクトコース"},
+    {id:20,label:"SAコース"},
+    {id:21,label:"UAコース"},
+    {id:22,label:"APコース"},
+    {id:23,label:"教職"}
+];
+
+
+export const getPeriod=[
+    {id:1, label:"１年春"},
+    {id:2, label:"２年春"},
+    {id:3, label:"３年春"},
+    {id:4, label:"４年春"},
+    {id:5, label:"１年秋"},
+    {id:6, label:"２年秋"},
+    {id:7, label:"３年秋"},
+    {id:8, label:"４年秋"},
+];
+
+export const getSubject=[
+    {id:1, label:"数学"},
+    {id:2, label:"情報"},
+    {id:3, label:"化学"},
+    {id:4, label:"物理"},
+    {id:5, label:"生物"},
+    {id:6, label:"英語"},
+    {id:7, label:"その他"}
+]
+
 
